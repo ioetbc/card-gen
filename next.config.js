@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  images: {
+    domains: ["cdn.stablediffusionapi.com"],
+  },
+  pageExtensions: ["tsx", "ts"],
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
