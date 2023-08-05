@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.385.0",
+    "@aws-sdk/s3-request-presigner": "^3.385.0",
     "@tanstack/react-query": "^4.32.1",
     "@types/node": "20.4.5",
     "@types/react": "18.2.17",

@@ -4,11 +4,15 @@ import {Accordion} from "./accordion";
 interface NavigationProps {
   handlePromptChange: (value: string) => void;
   handleImageCreate: () => void;
+  handlePreSignedURL: () => void;
+  handleUserUpload: () => void;
 }
 
 export const Navigation = ({
   handlePromptChange,
   handleImageCreate,
+  handlePreSignedURL,
+  handleUserUpload,
 }: NavigationProps) => {
   const data = [
     {
@@ -22,7 +26,12 @@ export const Navigation = ({
     },
     {
       title: "Upload images",
-      content: <p>This is the content for Accordion 2.</p>,
+      content: (
+        <div>
+          <button onClick={handlePreSignedURL}>get presigned url</button>
+          <button onClick={handleUserUpload}>upload user image</button>
+        </div>
+      ),
     },
     {
       title: "Something else",

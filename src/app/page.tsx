@@ -8,8 +8,21 @@ import {Navigation} from "./components/navigation";
 export default function Home() {
   const [prompt, setPrompt] = useState("");
 
-  const createCard = useMutation(async () => {
-    const response = await fetch("/api/hello", {
+  const generate = useMutation(async () => {
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      body: JSON.stringify({prompt}),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    return data;
+  });
+
+  const getPresignedURL = useMutation(async () => {
+    const response = await fetch("/api/get-presigned-url", {
       method: "POST",
       body: JSON.stringify({prompt}),
       headers: {
@@ -26,12 +39,33 @@ export default function Home() {
   };
 
   const handleImageCreate = () => {
-    createCard.mutate();
+    generate.mutate();
   };
 
-  console.log("mutation", createCard);
+  const handlePreSignedURL = () => {
+    getPresignedURL.mutate();
+  };
 
-  const d = createCard?.data as any;
+  const handleUserUpload = async () => {
+    const url = getPresignedURL?.data.url;
+    console.log("url", url);
+
+    const response = await fetch(url, {
+      method: "PUT",
+      body: JSON.stringify(
+        "https://rubberducker-user-uploads.s3.eu-west-2.amazonaws.com/test.jpeg"
+      ),
+      headers: {
+        "Content-Type": "image/jpeg", // Or 'image/png' if your image is a PNG
+      },
+    });
+
+    console.log("response", response);
+  };
+
+  console.log("mutation", generate);
+
+  const d = generate?.data as any;
   const data = d?.output || [];
 
   return (
@@ -40,6 +74,8 @@ export default function Home() {
         <Navigation
           handlePromptChange={handlePromptChange}
           handleImageCreate={handleImageCreate}
+          handlePreSignedURL={handlePreSignedURL}
+          handleUserUpload={handleUserUpload}
         />
         <div className="p-4">
           <h1 className="text-4xl font-bold text-center">build a card</h1>
