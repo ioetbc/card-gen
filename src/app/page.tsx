@@ -9,7 +9,6 @@ import {useGenerateCard} from "./hooks/use-generate-card";
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [message, setMessage] = useState("");
-  const [file, setFile] = useState<File | null>(null);
 
   const getPresignedURL = usePresignedURL();
   const generateCard = useGenerateCard();
@@ -21,11 +20,6 @@ export default function Home() {
     url: string;
     file: File;
   }) => {
-    // a cat wearing a birthday hat
-
-    console.log("getPresignedURL.data", url);
-    console.log("file", file);
-
     if (getPresignedURL.data && file) {
       await fetch(url, {
         method: "PUT",
@@ -44,12 +38,13 @@ export default function Home() {
   };
 
   const handleFile = async (file: File) => {
-    setFile(file);
-    const data = await getPresignedURL.mutateAsync({
+    const {url} = await getPresignedURL.mutateAsync({
       fileName: file.name,
       contentType: file.type,
     });
-    uploadFileToSignedURL({url: data.url, file});
+
+    console.log("efefeefeef", url);
+    uploadFileToSignedURL({url, file});
   };
 
   const d = generateCard?.data as any;
