@@ -5,13 +5,13 @@ import {DragDrop} from "./drag-drop";
 interface NavigationProps {
   handlePromptChange: (value: string) => void;
   handleMessageChange: (value: string) => void;
-  handleImageCreate: () => void;
+  handleGenerateCard: () => void;
   handleFile: (file: File) => void;
 }
 
 export const Navigation = ({
   handlePromptChange,
-  handleImageCreate,
+  handleGenerateCard,
   handleMessageChange,
   handleFile,
 }: NavigationProps) => {
@@ -47,7 +47,7 @@ export const Navigation = ({
   return (
     <div className="h-screen border-r-2 border-red-600">
       <Accordion data={data} />
-      <button onClick={handleImageCreate}>Generate</button>
+      <button onClick={handleGenerateCard}>Generate</button>
     </div>
   );
 };

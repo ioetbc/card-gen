@@ -1,95 +1,59 @@
 "use client";
 import {useEffect, useState} from "react";
-import {useMutation} from "@tanstack/react-query";
 import Image from "next/image";
 import fetch from "node-fetch";
 import {Navigation} from "./components/navigation";
+import {usePresignedURL} from "./hooks/use-presigned-url";
+import {useGenerateCard} from "./hooks/use-generate-card";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const getPresignedURL = usePresignedURL();
+  const generateCard = useGenerateCard();
 
-  const generate = useMutation(async () => {
-    const response = await fetch("/api/generate", {
-      method: "POST",
-      body: JSON.stringify({prompt}),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await response.json();
-    return data;
-  });
-
-  const getPresignedURL = useMutation(async () => {
-    const response = await fetch("/api/get-presigned-url", {
-      method: "POST",
-      body: JSON.stringify({fileName: "test.jpg", contentType: "image/jpg"}),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const url = await response.json();
-    return url;
-  });
-
-  useEffect(() => {
-    if (getPresignedURL.isSuccess) {
-      const {data} = getPresignedURL;
-      if (data.url) {
-        handleUserUpload({
-          url: data.url,
-          type: "image/jpg",
-        });
-      }
-    }
-  }, [getPresignedURL]);
-
-  const handlePromptChange = (value: string) => {
-    setPrompt(value);
-  };
-
-  const handleImageCreate = () => {
-    generate.mutate();
-  };
-
-  const handleUserUpload = async ({url, type}: {url: string; type: string}) => {
-    console.log("url", url);
-    console.log("type", type);
-    const response = await fetch(url, {
+  const fuck = async () => {
+    await fetch(getPresignedURL.data.url, {
       method: "PUT",
       body: JSON.stringify(file),
       headers: {
-        "Content-Type": type,
+        "Content-Type": file.type,
       },
     });
-
-    console.log("response", response);
   };
 
-  const handleMessageChange = (value: string) => {
-    setMessage(value);
+  useEffect(() => {
+    if (getPresignedURL.data && file) {
+      fuck();
+    }
+  }, [getPresignedURL.data, file]);
+
+  const handleGenerateCard = () => {
+    generateCard.mutate({
+      prompt,
+    });
   };
 
-  const handleFile = (file: File) => {
-    getPresignedURL.mutate();
+  const handleFile = async (file: File) => {
     setFile(file);
+    getPresignedURL.mutate({
+      fileName: file.name,
+      contentType: file.type,
+    });
   };
 
-  const d = generate?.data as any;
+  const d = generateCard?.data as any;
   const data = d?.output || [];
 
   return (
     <>
       <main className="grid grid-cols-2 gap-4">
         <Navigation
-          handlePromptChange={handlePromptChange}
-          handleMessageChange={handleMessageChange}
+          handlePromptChange={(value) => setPrompt(value)}
+          handleMessageChange={(value) => setMessage(value)}
           handleFile={handleFile}
-          handleImageCreate={handleImageCreate}
+          handleGenerateCard={handleGenerateCard}
         />
         <div className="p-4">
           <h1 className="text-4xl font-bold text-center">build a card</h1>
