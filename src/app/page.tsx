@@ -1,5 +1,5 @@
 "use client";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import Image from "next/image";
 import fetch from "node-fetch";
 import {Navigation} from "./components/navigation";
@@ -10,24 +10,32 @@ export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
+
   const getPresignedURL = usePresignedURL();
   const generateCard = useGenerateCard();
 
-  const fuck = async () => {
-    await fetch(getPresignedURL.data.url, {
-      method: "PUT",
-      body: JSON.stringify(file),
-      headers: {
-        "Content-Type": file.type,
-      },
-    });
-  };
+  const uploadFileToSignedURL = async ({
+    url,
+    file,
+  }: {
+    url: string;
+    file: File;
+  }) => {
+    // a cat wearing a birthday hat
 
-  useEffect(() => {
+    console.log("getPresignedURL.data", url);
+    console.log("file", file);
+
     if (getPresignedURL.data && file) {
-      fuck();
+      await fetch(url, {
+        method: "PUT",
+        body: JSON.stringify(file),
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
     }
-  }, [getPresignedURL.data, file]);
+  };
 
   const handleGenerateCard = () => {
     generateCard.mutate({
@@ -37,10 +45,11 @@ export default function Home() {
 
   const handleFile = async (file: File) => {
     setFile(file);
-    getPresignedURL.mutate({
+    const data = await getPresignedURL.mutateAsync({
       fileName: file.name,
       contentType: file.type,
     });
+    uploadFileToSignedURL({url: data.url, file});
   };
 
   const d = generateCard?.data as any;
@@ -56,7 +65,7 @@ export default function Home() {
           handleGenerateCard={handleGenerateCard}
         />
         <div className="p-4">
-          <h1 className="text-4xl font-bold text-center">build a card</h1>
+          <h1 className="text-4xl font-bold text-center">Build a Card</h1>
           <div className="grid grid-cols-2 gap-4">
             {data.map((item: string) => (
               <Image
