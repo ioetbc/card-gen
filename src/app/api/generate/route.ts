@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 
 import {STABLE_DIFFUSION_IMAGE_2_IMAGE_URL} from "@/app/constants";
 
+// get this file from s3
 const testImage =
   "https://rubberducker-user-uploads.s3.eu-west-2.amazonaws.com/test-image.png";
 

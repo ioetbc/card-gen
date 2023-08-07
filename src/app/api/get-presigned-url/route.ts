@@ -24,10 +24,7 @@ const sanitizeFilename = (filename: string) => {
 const generateUploadId = () => randomBytes(32).toString("hex");
 
 export async function POST(request: Request) {
-  // const {fileName, contentType} = await request.json();
-
-  const fileName = "wow";
-  const contentType = "image/jpeg";
+  const {fileName, contentType} = await request.json();
 
   const objectKey = `upload/${generateUploadId()}/${encodeURIComponent(
     sanitizeFilename(fileName)

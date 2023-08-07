@@ -1,5 +1,5 @@
 "use client";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useMutation} from "@tanstack/react-query";
 import Image from "next/image";
 import fetch from "node-fetch";
@@ -7,6 +7,8 @@ import {Navigation} from "./components/navigation";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
+  const [message, setMessage] = useState("");
+  const [file, setFile] = useState<File | null>(null);
 
   const generate = useMutation(async () => {
     const response = await fetch("/api/generate", {
@@ -24,15 +26,27 @@ export default function Home() {
   const getPresignedURL = useMutation(async () => {
     const response = await fetch("/api/get-presigned-url", {
       method: "POST",
-      body: JSON.stringify({prompt}),
+      body: JSON.stringify({fileName: "test.jpg", contentType: "image/jpg"}),
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    const data = await response.json();
-    return data;
+    const url = await response.json();
+    return url;
   });
+
+  useEffect(() => {
+    if (getPresignedURL.isSuccess) {
+      const {data} = getPresignedURL;
+      if (data.url) {
+        handleUserUpload({
+          url: data.url,
+          type: "image/jpg",
+        });
+      }
+    }
+  }, [getPresignedURL]);
 
   const handlePromptChange = (value: string) => {
     setPrompt(value);
@@ -42,28 +56,28 @@ export default function Home() {
     generate.mutate();
   };
 
-  const handlePreSignedURL = () => {
-    getPresignedURL.mutate();
-  };
-
-  const handleUserUpload = async () => {
-    const url = getPresignedURL?.data.url;
+  const handleUserUpload = async ({url, type}: {url: string; type: string}) => {
     console.log("url", url);
-
+    console.log("type", type);
     const response = await fetch(url, {
       method: "PUT",
-      body: JSON.stringify(
-        "https://rubberducker-user-uploads.s3.eu-west-2.amazonaws.com/test.jpeg"
-      ),
+      body: JSON.stringify(file),
       headers: {
-        "Content-Type": "image/jpeg", // Or 'image/png' if your image is a PNG
+        "Content-Type": type,
       },
     });
 
     console.log("response", response);
   };
 
-  console.log("mutation", generate);
+  const handleMessageChange = (value: string) => {
+    setMessage(value);
+  };
+
+  const handleFile = (file: File) => {
+    getPresignedURL.mutate();
+    setFile(file);
+  };
 
   const d = generate?.data as any;
   const data = d?.output || [];
@@ -73,9 +87,9 @@ export default function Home() {
       <main className="grid grid-cols-2 gap-4">
         <Navigation
           handlePromptChange={handlePromptChange}
+          handleMessageChange={handleMessageChange}
+          handleFile={handleFile}
           handleImageCreate={handleImageCreate}
-          handlePreSignedURL={handlePreSignedURL}
-          handleUserUpload={handleUserUpload}
         />
         <div className="p-4">
           <h1 className="text-4xl font-bold text-center">build a card</h1>

@@ -1,18 +1,19 @@
 import React from "react";
 import {Accordion} from "./accordion";
+import {DragDrop} from "./drag-drop";
 
 interface NavigationProps {
   handlePromptChange: (value: string) => void;
+  handleMessageChange: (value: string) => void;
   handleImageCreate: () => void;
-  handlePreSignedURL: () => void;
-  handleUserUpload: () => void;
+  handleFile: (file: File) => void;
 }
 
 export const Navigation = ({
   handlePromptChange,
   handleImageCreate,
-  handlePreSignedURL,
-  handleUserUpload,
+  handleMessageChange,
+  handleFile,
 }: NavigationProps) => {
   const data = [
     {
@@ -28,14 +29,18 @@ export const Navigation = ({
       title: "Upload images",
       content: (
         <div>
-          <button onClick={handlePreSignedURL}>get presigned url</button>
-          <button onClick={handleUserUpload}>upload user image</button>
+          <DragDrop onFile={handleFile} />
         </div>
       ),
     },
     {
-      title: "Something else",
-      content: <p>This is the content for Accordion 2.</p>,
+      title: "Add a custom message",
+      content: (
+        <input
+          onChange={(event) => handleMessageChange(event.target.value)}
+          className="border-2 border-black"
+        />
+      ),
     },
   ];
 
