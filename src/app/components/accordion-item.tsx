@@ -1,28 +1,55 @@
-import React, {useState} from "react";
+import React, {useState, useEffect, useRef} from "react";
+import {Collapse} from "@chakra-ui/transition";
 
 type AccordionItemProps = {
   title: string;
+  active: boolean;
   children: React.ReactNode;
+  isComplete: boolean;
 };
 
 export const AccordionItem: React.FC<AccordionItemProps> = ({
   title,
   children,
+  active,
+  isComplete,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(active);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      const timeout = setTimeout(() => {
+        const inputElem = contentRef.current?.querySelector("textarea");
+        if (inputElem) {
+          inputElem.focus();
+        }
+      }, 600); // Delay slightly more than the animation duration
+      return () => clearTimeout(timeout);
+    }
+  }, [isOpen]);
+
   return (
     <div>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 border-b border-gray-200"
+        className="w-full flex justify-between text-left py-8 px-4 bg-white text-black focus:outline-none border-b border-gray-200"
       >
-        {title}
+        <div className="flex items-center gap-2">
+          <div>{title}</div>
+          <div
+            className={`${
+              isComplete ? "bg-green-400" : "bg-red-400"
+            } w-2 h-2 rounded-full`}
+          ></div>
+        </div>
+        <div>{isOpen ? "-" : "+"}</div>
       </button>
-      {isOpen && (
-        <div className="mt-2 bg-white p-4 rounded-lg shadow-md border-b border-gray-200">
+      <Collapse startingHeight={0} in={isOpen} className="bg-white">
+        <div className="p-4 border-b border-gray-200" ref={contentRef}>
           {children}
         </div>
-      )}
+      </Collapse>
     </div>
   );
 };

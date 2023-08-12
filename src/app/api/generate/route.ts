@@ -4,7 +4,7 @@ import {STABLE_DIFFUSION_IMAGE_2_IMAGE_URL} from "@/app/constants";
 
 // get this file from s3
 const testImage =
-  "https://rubberducker-user-uploads.s3.eu-west-2.amazonaws.com/test-image.png";
+  "https://rubberducker-user-uploads.s3.eu-west-2.amazonaws.com/westie-test.jpeg";
 
 export async function POST(request: Request) {
   const {prompt} = await request.json();
@@ -21,15 +21,17 @@ export async function POST(request: Request) {
       prompt,
       negative_prompt: null,
       init_image: testImage,
+      strength: 0.7,
       width: "512",
       height: "512",
-      samples: "4",
+      samples: "2",
+      webhook: "https://hooks.zapier.com/hooks/catch/16204757/399dy56/",
     }),
   });
 
   const data = (await response.json()) as any;
 
-  console.log("data", data);
+  console.log("wtf data", data);
 
   return new Response(JSON.stringify(data), {
     headers: {"Content-Type": "application/json"},

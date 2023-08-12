@@ -1,12 +1,21 @@
 import React from "react";
+import {Tooltip} from "@chakra-ui/react";
+
 import {Accordion} from "./accordion";
 import {DragDrop} from "./drag-drop";
+import {TextArea} from "./inputs/text-area";
+import {Select} from "./inputs/select";
+import {ARTISTIC_STYLES} from "../constants";
 
 interface NavigationProps {
   handlePromptChange: (value: string) => void;
   handleMessageChange: (value: string) => void;
   handleGenerateCard: () => void;
   handleFile: (file: File) => void;
+  hasPrompt: boolean;
+  hasMessage: boolean;
+  hasFile: boolean;
+  url: string;
 }
 
 export const Navigation = ({
@@ -14,40 +23,64 @@ export const Navigation = ({
   handleGenerateCard,
   handleMessageChange,
   handleFile,
+  hasPrompt,
+  hasMessage,
+  hasFile,
+  url,
 }: NavigationProps) => {
   const data = [
     {
+      title: "Upload an image",
+      children: <DragDrop onFile={handleFile} url={url} />,
+      active: true,
+      isComplete: hasFile,
+    },
+    {
       title: "Prompt",
-      content: (
-        <input
-          onChange={(event) => handlePromptChange(event.target.value)}
-          className="border-2 border-black"
+      children: (
+        <TextArea
+          placeholder="Add a party hat to my dog"
+          handleChange={handlePromptChange}
         />
       ),
+      isComplete: hasPrompt,
+      active: false,
     },
     {
-      title: "Upload images",
-      content: (
-        <div>
-          <DragDrop onFile={handleFile} />
-        </div>
-      ),
+      title: "Artistc style",
+      children: <Select options={ARTISTIC_STYLES} />,
+      active: false,
+      isComplete: false,
     },
     {
-      title: "Add a custom message",
-      content: (
-        <input
-          onChange={(event) => handleMessageChange(event.target.value)}
-          className="border-2 border-black"
+      title: "Add a message",
+      children: (
+        <TextArea
+          placeholder="Happy birthday bob."
+          handleChange={handleMessageChange}
         />
       ),
+      isComplete: hasMessage,
+      active: false,
     },
   ];
 
+  const disabled = !hasPrompt || !hasFile;
+
   return (
-    <div className="h-screen border-r-2 border-red-600">
+    <div className="h-screen border-r border-grey-600 flex flex-col justify-between p-4">
       <Accordion data={data} />
-      <button onClick={handleGenerateCard}>Generate</button>
+      <Tooltip label="Enter prompt and image to generate image">
+        <button
+          className={`text-white py-4 px-16 w-60 rounded-md shadow-inner w-full ${
+            disabled ? "cursor-not-allowed" : "cursor-pointer"
+          } ${disabled ? "bg-gray-800" : "bg-black"}`}
+          onClick={handleGenerateCard}
+          disabled={disabled}
+        >
+          Generate
+        </button>
+      </Tooltip>
     </div>
   );
 };
