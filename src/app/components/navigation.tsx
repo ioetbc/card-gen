@@ -4,14 +4,17 @@ import {Tooltip} from "@chakra-ui/react";
 import {Accordion} from "./accordion";
 import {DragDrop} from "./drag-drop";
 import {TextArea} from "./inputs/text-area";
-import {Select} from "./inputs/select";
+import {ArtisticStyle} from "./artistic-style";
 import {ARTISTIC_STYLES} from "../constants";
+import {TArtisticStyle} from "../types";
 
 interface NavigationProps {
   handlePromptChange: (value: string) => void;
   handleMessageChange: (value: string) => void;
   handleGenerateCard: () => void;
+  handleArtisticStyleChange: (value: TArtisticStyle) => void;
   handleFile: (file: File) => void;
+  hasArtisticStyle: boolean;
   hasPrompt: boolean;
   hasMessage: boolean;
   hasFile: boolean;
@@ -22,10 +25,12 @@ export const Navigation = ({
   handlePromptChange,
   handleGenerateCard,
   handleMessageChange,
+  handleArtisticStyleChange,
   handleFile,
   hasPrompt,
   hasMessage,
   hasFile,
+  hasArtisticStyle,
   url,
 }: NavigationProps) => {
   const data = [
@@ -48,7 +53,12 @@ export const Navigation = ({
     },
     {
       title: "Artistc style",
-      children: <Select options={ARTISTIC_STYLES} />,
+      children: (
+        <ArtisticStyle
+          hasArtisticStyle={hasArtisticStyle}
+          handleArtisticStyleChange={handleArtisticStyleChange}
+        />
+      ),
       active: false,
       isComplete: false,
     },

@@ -8,12 +8,16 @@ import {Navigation} from "./components/navigation";
 import {usePresignedURL} from "./hooks/use-presigned-url";
 import {useGenerateCard} from "./hooks/use-generate-card";
 import {Card} from "./components/card";
+import {TArtisticStyle} from "./types";
 
 export default function Home() {
   const [url, setUrl] = useState("");
   const [prompt, setPrompt] = useState("");
   const [message, setMessage] = useState("");
-  // const [images, setImages] = useState<string[]>([]);
+  const [artisticStyle, setArtisticStyle] = useState<TArtisticStyle | null>(
+    null
+  );
+  const [images, setImages] = useState<string[]>([]);
   const [image, setImage] = useState<string | null>(null);
   const [userId, setUserId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -35,9 +39,9 @@ export default function Home() {
 
       if (!gmm?.url) return;
 
-      // const split = gmm.url.split(",");
+      const split = gmm.url.split(",");
 
-      // setImages((prev) => [...prev, ...split]);
+      setImages((prev) => [...prev, ...split]);
       setImage(gmm.url);
       setLoading(false);
     });
@@ -77,6 +81,7 @@ export default function Home() {
     setLoading(true);
     generateCard.mutate({
       prompt,
+      artisticStyle,
     });
   };
 
@@ -104,6 +109,8 @@ export default function Home() {
           handleMessageChange={(value) => setMessage(value)}
           handleFile={handleFile}
           handleGenerateCard={handleGenerateCard}
+          hasArtisticStyle={!!artisticStyle}
+          handleArtisticStyleChange={(value) => setArtisticStyle(value)}
           hasPrompt={!!prompt}
           hasMessage={!!message}
           hasFile={!!getPresignedURL?.data}
@@ -111,12 +118,16 @@ export default function Home() {
         />
         <div className="p-4">
           <div className="flex items-center justify-center h-full">
-            {!image && !loading ? (
+            {!images.length && !loading ? (
               <h2 className="text-2xl text-center">
                 Generate a card by upload an image and tweaking the prompt.
               </h2>
             ) : (
-              <Card loading={loading} url={image} />
+              <div className="flex items-center justify-center gap-8 flex-wrap">
+                {images.map((item: string) => (
+                  <Card key={item} loading={loading} url={item} />
+                ))}
+              </div>
             )}
 
             {/* )} */}
@@ -142,3 +153,12 @@ export default function Home() {
     </>
   );
 }
+
+// TODO
+// Ability to change all settings and make then easy to read. e.g. stength: how different should the image be from the original. The smaller the number the less animated the image will be
+// Ability to write over the image using canvas or something
+// Ability to purchase a card
+// Only allow one filter to be open at a time
+// Fix the loading state
+// Add price to the card
+// Show more info modal that slides up when you click more info button on the card
