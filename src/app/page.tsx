@@ -1,6 +1,5 @@
 "use client";
 import {useEffect, useState} from "react";
-import Image from "next/image";
 import fetch from "node-fetch";
 import {onSnapshot, doc} from "@firebase/firestore";
 import {db} from "./firestore";
@@ -8,21 +7,24 @@ import {db} from "./firestore";
 import {Navigation} from "./components/navigation";
 import {usePresignedURL} from "./hooks/use-presigned-url";
 import {useGenerateCard} from "./hooks/use-generate-card";
+import {Card} from "./components/card";
 
 export default function Home() {
   const [url, setUrl] = useState("");
   const [prompt, setPrompt] = useState("");
   const [message, setMessage] = useState("");
-  const [images, setImages] = useState<string[]>([]);
+  // const [images, setImages] = useState<string[]>([]);
+  const [image, setImage] = useState<string | null>(null);
   const [userId, setUserId] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const getPresignedURL = usePresignedURL();
   const generateCard = useGenerateCard();
 
   useEffect(() => {
-    // if (!userId) return;
+    if (!userId) return;
 
-    const userDocRef = doc(db, "user", "35020059".toString());
+    const userDocRef = doc(db, "user", userId.toString());
 
     const unsub = onSnapshot(userDocRef, (docSnapshot) => {
       if (!docSnapshot.exists()) return;
@@ -33,9 +35,11 @@ export default function Home() {
 
       if (!gmm?.url) return;
 
-      const split = gmm.url.split(",");
+      // const split = gmm.url.split(",");
 
-      setImages((prev) => [...prev, ...split]);
+      // setImages((prev) => [...prev, ...split]);
+      setImage(gmm.url);
+      setLoading(false);
     });
 
     return () => {
@@ -70,6 +74,7 @@ export default function Home() {
   };
 
   const handleGenerateCard = () => {
+    setLoading(true);
     generateCard.mutate({
       prompt,
     });
@@ -89,9 +94,8 @@ export default function Home() {
     setUrl(URL.createObjectURL(file));
   };
 
-  const id = generateCard?.data?.id;
-
-  console.log("id", id);
+  console.log("image", image);
+  console.log("loading", loading);
   return (
     <>
       <main className="grid grid-cols-[1fr,3fr] gap-4">
@@ -106,16 +110,32 @@ export default function Home() {
           url={url}
         />
         <div className="p-4">
-          <div className="grid grid-cols-2 gap-4">
-            {images.map((item: string) => (
-              <Image
-                key={item}
-                src={item}
-                width={512}
-                height={512}
-                alt="card"
-              />
-            ))}
+          <div className="flex items-center justify-center h-full">
+            {!image && !loading ? (
+              <h2 className="text-2xl text-center">
+                Generate a card by upload an image and tweaking the prompt.
+              </h2>
+            ) : (
+              <Card loading={loading} url={image} />
+            )}
+
+            {/* )} */}
+            {/* {loading && <Skeleton />} */}
+            {/* {!!images.length ? (
+              images.map((item: string) => (
+                <Image
+                  key={item}
+                  src={item}
+                  width={512}
+                  height={512}
+                  alt="card"
+                />
+              ))
+            ) : {!loading && (
+              <h2 className="text-2xl text-center">
+                Generate a card by upload an image and tweaking the prompt.
+              </h2>
+            )}} */}
           </div>
         </div>
       </main>

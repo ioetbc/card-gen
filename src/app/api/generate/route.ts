@@ -4,7 +4,7 @@ import {STABLE_DIFFUSION_IMAGE_2_IMAGE_URL} from "@/app/constants";
 
 // get this file from s3
 const testImage =
-  "https://rubberducker-user-uploads.s3.eu-west-2.amazonaws.com/westie-test.jpeg";
+  "https://rubberducker-user-uploads.s3.eu-west-2.amazonaws.com/upload/test-p2.jpeg";
 
 export async function POST(request: Request) {
   const {prompt} = await request.json();
@@ -19,12 +19,13 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       key: process.env.STABLE_DIFFUSION_API_KEY,
       prompt,
-      negative_prompt: null,
+      negative_prompt:
+        "extra limbs, poorly drawn face, poorly drawn hands, disfigured, deformed, bad anatomy, distorted face, multiple faces, multiple chins",
       init_image: testImage,
-      strength: 0.7,
+      strength: 0.4,
       width: "512",
       height: "512",
-      samples: "2",
+      samples: 1,
       webhook: "https://hooks.zapier.com/hooks/catch/16204757/399dy56/",
     }),
   });

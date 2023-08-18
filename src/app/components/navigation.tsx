@@ -39,7 +39,7 @@ export const Navigation = ({
       title: "Prompt",
       children: (
         <TextArea
-          placeholder="Add a party hat to my dog"
+          placeholder="A photograph of a man wearing glasses, cubism, by Vincent van Gogh, detailed, colorful, HD, low key"
           handleChange={handlePromptChange}
         />
       ),
