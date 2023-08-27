@@ -2,15 +2,22 @@
 import {useEffect, useState} from "react";
 import fetch from "node-fetch";
 import {onSnapshot, doc} from "@firebase/firestore";
-import {db} from "./firestore";
+import {BottomSheet} from "react-spring-bottom-sheet";
+import "react-spring-bottom-sheet/dist/style.css";
 
+import {db} from "./firestore";
 import {Navigation} from "./components/navigation";
 import {usePresignedURL} from "./hooks/use-presigned-url";
 import {useGenerateCard} from "./hooks/use-generate-card";
 import {Card} from "./components/card";
 import {TArtisticStyle} from "./types";
+import Image from "next/image";
+import {useMedia} from "./hooks/use-media-query";
+import {PrimaryButton} from "./components/buttons/primary-button";
 
 export default function Home() {
+  const {isDesktop} = useMedia();
+  const [showNavigation, setShowNavigation] = useState<boolean>(isDesktop);
   const [url, setUrl] = useState("");
   const [prompt, setPrompt] = useState("");
   const [message, setMessage] = useState("");
@@ -21,6 +28,11 @@ export default function Home() {
   const [image, setImage] = useState<string | null>(null);
   const [userId, setUserId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
+  const [selection, setSelection] = useState<{
+    url: string;
+    title: string;
+  } | null>(null);
 
   const getPresignedURL = usePresignedURL();
   const generateCard = useGenerateCard();
@@ -99,12 +111,17 @@ export default function Home() {
     setUrl(URL.createObjectURL(file));
   };
 
-  console.log("image", image);
-  console.log("loading", loading);
+  const mockImages = [
+    "https://images.unsplash.com/photo-1680724865725-6b8963f99975?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2043&q=80",
+    "https://images.unsplash.com/photo-1680724864727-eaf2856591d0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2043&q=80",
+    "https://images.unsplash.com/photo-1680798790107-173a774f34ce?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2043&q=80",
+  ];
+
   return (
     <>
-      <main className="grid grid-cols-[1fr,3fr] gap-4">
+      <main className="md:grid md:grid-cols-[1fr,3fr] gap-4 relative">
         <Navigation
+          isDesktop={isDesktop}
           handlePromptChange={(value) => setPrompt(value)}
           handleMessageChange={(value) => setMessage(value)}
           handleFile={handleFile}
@@ -115,40 +132,52 @@ export default function Home() {
           hasMessage={!!message}
           hasFile={!!getPresignedURL?.data}
           url={url}
+          showNavigation={showNavigation}
+          setShowNavigation={setShowNavigation}
         />
-        <div className="p-4">
-          <div className="flex items-center justify-center h-full">
-            {!images.length && !loading ? (
-              <h2 className="text-2xl text-center">
-                Generate a card by upload an image and tweaking the prompt.
-              </h2>
-            ) : (
-              <div className="flex items-center justify-center gap-8 flex-wrap">
-                {images.map((item: string) => (
-                  <Card key={item} loading={loading} url={item} />
-                ))}
-              </div>
-            )}
-
-            {/* )} */}
-            {/* {loading && <Skeleton />} */}
-            {/* {!!images.length ? (
-              images.map((item: string) => (
-                <Image
+        <div className="flex items-center justify-center h-full p-4 my-24">
+          {!mockImages.length && !loading ? (
+            <h2 className="text-2xl text-center">
+              Generate a card by upload an image and tweaking the prompt.
+            </h2>
+          ) : (
+            <div className="flex items-center gap-8 flex-wrap">
+              {mockImages.map((item: string) => (
+                <Card
                   key={item}
-                  src={item}
-                  width={512}
-                  height={512}
-                  alt="card"
+                  loading={loading}
+                  url={item}
+                  handleClick={() => setOpen(!open)}
+                  handleSelection={() =>
+                    setSelection({
+                      url: item,
+                      title: "get this from GPT",
+                    })
+                  }
                 />
-              ))
-            ) : {!loading && (
-              <h2 className="text-2xl text-center">
-                Generate a card by upload an image and tweaking the prompt.
-              </h2>
-            )}} */}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
+
+        <BottomSheet open={open} onDismiss={() => setOpen(false)}>
+          <div className="flex gap-4 p-8">
+            {selection?.url && (
+              <Image width={256} height={256} src={selection.url} alt="card" />
+            )}
+            <h1 className="text-4xl text-center">{selection?.title}</h1>
+          </div>
+        </BottomSheet>
+
+        {!isDesktop && (
+          <div className="fixed bottom-4 w-full px-8">
+            <PrimaryButton
+              label="Generate"
+              handleOnClick={() => setShowNavigation(!showNavigation)}
+              disabled={false}
+            />
+          </div>
+        )}
       </main>
     </>
   );
@@ -162,3 +191,6 @@ export default function Home() {
 // Fix the loading state
 // Add price to the card
 // Show more info modal that slides up when you click more info button on the card
+// Use this prompt to give the card a title. Users should be able to view there old prompts (Can you summarise this in a short sentence between 3 and 6 words) GPT
+// Add paper, pckaing and postage details
+// Maybe use inpainting

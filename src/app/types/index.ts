@@ -1,3 +1,5 @@
+import {ReactNode} from "react";
+
 export type TArtisticStyle =
   | "3d"
   | "art-deco"
@@ -10,3 +12,10 @@ export type TArtisticStyle =
   | "stone-sculpture"
   | "van-gogh"
   | "pop-art";
+
+export type NavigatonItems = {
+  title: string;
+  children: ReactNode;
+  active: boolean;
+  isComplete: boolean;
+};

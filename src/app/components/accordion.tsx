@@ -1,14 +1,9 @@
-// Accordion.tsx
-import React, {ReactNode} from "react";
+import React from "react";
 import {AccordionItem} from "./accordion-item";
+import {NavigatonItems} from "../types";
 
 type AccordionProps = {
-  data: {
-    title: string;
-    children: ReactNode;
-    active: boolean;
-    isComplete: boolean;
-  }[];
+  data: NavigatonItems[];
 };
 
 export const Accordion: React.FC<AccordionProps> = ({data}) => {

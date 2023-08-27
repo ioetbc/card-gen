@@ -1,14 +1,15 @@
 import React from "react";
-import {Tooltip} from "@chakra-ui/react";
 
 import {Accordion} from "./accordion";
 import {DragDrop} from "./drag-drop";
 import {TextArea} from "./inputs/text-area";
 import {ArtisticStyle} from "./artistic-style";
-import {ARTISTIC_STYLES} from "../constants";
-import {TArtisticStyle} from "../types";
+import {NavigatonItems, TArtisticStyle} from "../types";
+import {PrimaryButton} from "./buttons/primary-button";
+import {BottomSheet} from "react-spring-bottom-sheet";
 
-interface NavigationProps {
+type NavigationProps = {
+  isDesktop: boolean;
   handlePromptChange: (value: string) => void;
   handleMessageChange: (value: string) => void;
   handleGenerateCard: () => void;
@@ -19,9 +20,35 @@ interface NavigationProps {
   hasMessage: boolean;
   hasFile: boolean;
   url: string;
-}
+  showNavigation?: boolean;
+  setShowNavigation?: (value: boolean) => void;
+};
+
+type NavProps = {
+  data: NavigatonItems[];
+  disabled: boolean;
+  handleGenerateCard: () => void;
+  isDesktop: boolean;
+};
+
+const Nav = ({data, disabled, handleGenerateCard, isDesktop}: NavProps) => {
+  return (
+    <div className="h-screen border-r border-grey-600 flex flex-col justify-between p-4">
+      <Accordion data={data} />
+
+      {isDesktop && (
+        <PrimaryButton
+          disabled={disabled}
+          label="Generate"
+          handleOnClick={handleGenerateCard}
+        />
+      )}
+    </div>
+  );
+};
 
 export const Navigation = ({
+  isDesktop,
   handlePromptChange,
   handleGenerateCard,
   handleMessageChange,
@@ -32,6 +59,8 @@ export const Navigation = ({
   hasFile,
   hasArtisticStyle,
   url,
+  showNavigation = false,
+  setShowNavigation,
 }: NavigationProps) => {
   const data = [
     {
@@ -77,20 +106,32 @@ export const Navigation = ({
 
   const disabled = !hasPrompt || !hasFile;
 
-  return (
-    <div className="h-screen border-r border-grey-600 flex flex-col justify-between p-4">
-      <Accordion data={data} />
-      <Tooltip label="Enter prompt and image to generate image">
-        <button
-          className={`text-white py-4 px-16 w-60 rounded-md shadow-inner w-full ${
-            disabled ? "cursor-not-allowed" : "cursor-pointer"
-          } ${disabled ? "bg-gray-800" : "bg-black"}`}
-          onClick={handleGenerateCard}
+  return isDesktop ? (
+    <Nav
+      data={data}
+      disabled={disabled}
+      handleGenerateCard={handleGenerateCard}
+      isDesktop={isDesktop}
+    />
+  ) : (
+    <BottomSheet
+      open={showNavigation}
+      onDismiss={() => setShowNavigation && setShowNavigation(false)}
+      maxHeight={window.innerHeight - 80}
+      footer={
+        <PrimaryButton
           disabled={disabled}
-        >
-          Generate
-        </button>
-      </Tooltip>
-    </div>
+          label="Generate"
+          handleOnClick={handleGenerateCard}
+        />
+      }
+    >
+      <Nav
+        data={data}
+        disabled={disabled}
+        handleGenerateCard={handleGenerateCard}
+        isDesktop={isDesktop}
+      />
+    </BottomSheet>
   );
 };
