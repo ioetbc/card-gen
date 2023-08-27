@@ -2,12 +2,12 @@ import React from "react";
 
 type PrimaryButtonProps = {
   label: string;
-  disabled: boolean;
+  disabled?: boolean;
   handleOnClick: () => void;
 };
 
 export const PrimaryButton = ({
-  disabled,
+  disabled = false,
   handleOnClick,
   label,
 }: PrimaryButtonProps) => {

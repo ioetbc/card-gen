@@ -19,3 +19,8 @@ export type NavigatonItems = {
   active: boolean;
   isComplete: boolean;
 };
+
+export type TProduct = {
+  url: string;
+  title: string;
+} | null;

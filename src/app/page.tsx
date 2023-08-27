@@ -2,7 +2,6 @@
 import {useEffect, useState} from "react";
 import fetch from "node-fetch";
 import {onSnapshot, doc} from "@firebase/firestore";
-import {BottomSheet} from "react-spring-bottom-sheet";
 import "react-spring-bottom-sheet/dist/style.css";
 
 import {db} from "./firestore";
@@ -10,10 +9,10 @@ import {Navigation} from "./components/navigation";
 import {usePresignedURL} from "./hooks/use-presigned-url";
 import {useGenerateCard} from "./hooks/use-generate-card";
 import {Card} from "./components/card";
-import {TArtisticStyle} from "./types";
-import Image from "next/image";
+import {TArtisticStyle, TProduct} from "./types";
 import {useMedia} from "./hooks/use-media-query";
 import {PrimaryButton} from "./components/buttons/primary-button";
+import {ProductDetails} from "./components/product-details";
 
 export default function Home() {
   const {isDesktop} = useMedia();
@@ -28,11 +27,7 @@ export default function Home() {
   const [image, setImage] = useState<string | null>(null);
   const [userId, setUserId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [open, setOpen] = useState(false);
-  const [selection, setSelection] = useState<{
-    url: string;
-    title: string;
-  } | null>(null);
+  const [product, setProduct] = useState<TProduct>(null);
 
   const getPresignedURL = usePresignedURL();
   const generateCard = useGenerateCard();
@@ -141,17 +136,16 @@ export default function Home() {
               Generate a card by upload an image and tweaking the prompt.
             </h2>
           ) : (
-            <div className="flex items-center gap-8 flex-wrap">
+            <div className="flex items-center justify-center md:justify-start gap-8 flex-wrap">
               {mockImages.map((item: string) => (
                 <Card
                   key={item}
                   loading={loading}
                   url={item}
-                  handleClick={() => setOpen(!open)}
-                  handleSelection={() =>
-                    setSelection({
+                  handleProductChange={() =>
+                    setProduct({
                       url: item,
-                      title: "get this from GPT",
+                      title: "Get from GPT",
                     })
                   }
                 />
@@ -160,14 +154,10 @@ export default function Home() {
           )}
         </div>
 
-        <BottomSheet open={open} onDismiss={() => setOpen(false)}>
-          <div className="flex gap-4 p-8">
-            {selection?.url && (
-              <Image width={256} height={256} src={selection.url} alt="card" />
-            )}
-            <h1 className="text-4xl text-center">{selection?.title}</h1>
-          </div>
-        </BottomSheet>
+        <ProductDetails
+          product={product}
+          handleClose={() => setProduct(null)}
+        />
 
         {!isDesktop && (
           <div className="fixed bottom-4 w-full px-8">
