@@ -8,7 +8,7 @@ type AccordionProps = {
 
 export const Accordion: React.FC<AccordionProps> = ({data}) => {
   return (
-    <div className="w-full border border-grey-300 rounded-lg">
+    <div className="w-full rounded-lg">
       {data.map(({title, children, active, isComplete}, index) => (
         <AccordionItem
           key={index}

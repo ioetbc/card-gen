@@ -4,7 +4,7 @@ import {Accordion} from "./accordion";
 import {DragDrop} from "./drag-drop";
 import {TextArea} from "./inputs/text-area";
 import {ArtisticStyle} from "./artistic-style";
-import {NavigatonItems, TArtisticStyle} from "../types";
+import {TArtisticStyle} from "../types";
 import {PrimaryButton} from "./buttons/primary-button";
 import {BottomSheet} from "react-spring-bottom-sheet";
 
@@ -22,29 +22,6 @@ type NavigationProps = {
   url: string;
   showNavigation?: boolean;
   setShowNavigation?: (value: boolean) => void;
-};
-
-type NavProps = {
-  data: NavigatonItems[];
-  disabled: boolean;
-  handleGenerateCard: () => void;
-  isDesktop: boolean;
-};
-
-const Nav = ({data, disabled, handleGenerateCard, isDesktop}: NavProps) => {
-  return (
-    <div className="h-screen border-r border-grey-600 flex flex-col justify-between p-4">
-      <Accordion data={data} />
-
-      {isDesktop && (
-        <PrimaryButton
-          disabled={disabled}
-          label="Generate"
-          handleOnClick={handleGenerateCard}
-        />
-      )}
-    </div>
-  );
 };
 
 export const Navigation = ({
@@ -107,12 +84,21 @@ export const Navigation = ({
   const disabled = !hasPrompt || !hasFile;
 
   return isDesktop ? (
-    <Nav
-      data={data}
-      disabled={disabled}
-      handleGenerateCard={handleGenerateCard}
-      isDesktop={isDesktop}
-    />
+    <div className="flex flex-col justify-between relative">
+      <div className="fixed border-r border-grey-600 px-4">
+        <div className="flex flex-col h-screen justify-between py-4">
+          <Accordion data={data} />
+
+          {isDesktop && (
+            <PrimaryButton
+              disabled={disabled}
+              label="Generate"
+              handleOnClick={handleGenerateCard}
+            />
+          )}
+        </div>
+      </div>
+    </div>
   ) : (
     <BottomSheet
       open={showNavigation}
@@ -126,12 +112,17 @@ export const Navigation = ({
         />
       }
     >
-      <Nav
-        data={data}
-        disabled={disabled}
-        handleGenerateCard={handleGenerateCard}
-        isDesktop={isDesktop}
-      />
+      <div className="h-screen border-r border-grey-600 flex flex-col justify-between p-4">
+        <Accordion data={data} />
+
+        {isDesktop && (
+          <PrimaryButton
+            disabled={disabled}
+            label="Generate"
+            handleOnClick={handleGenerateCard}
+          />
+        )}
+      </div>
     </BottomSheet>
   );
 };
