@@ -71,7 +71,7 @@ export const ProductDetails = ({product, handleClose}: ProductDetailsProps) => {
     <BottomSheet
       open={!!product}
       onDismiss={handleClose}
-      maxHeight={window.innerHeight - 80}
+      maxHeight={window?.innerHeight - 80}
     >
       <div className="md:flex md:gap-4 p-8">
         <div className="flex mb-8 md:mb-0">

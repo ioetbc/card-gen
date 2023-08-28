@@ -103,7 +103,7 @@ export const Navigation = ({
     <BottomSheet
       open={showNavigation}
       onDismiss={() => setShowNavigation && setShowNavigation(false)}
-      maxHeight={window.innerHeight - 80}
+      maxHeight={window?.innerHeight - 80}
       footer={
         <PrimaryButton
           disabled={disabled}
