@@ -78,7 +78,9 @@ export async function POST(request: Request) {
       width: "512",
       height: "512",
       samples: "2",
-      webhook: "https://hooks.zapier.com/hooks/catch/16204757/399dy56/",
+      // webhook: "https://hooks.zapier.com/hooks/catch/16204757/399dy56/",
+      webhook:
+        "https://691d-2a00-23c4-2fa5-1201-8520-904f-291a-71bd.ngrok-free.app/api/webhook-thing",
     }),
   });
 
