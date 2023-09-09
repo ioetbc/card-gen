@@ -68,17 +68,6 @@ export const Navigation = ({
       active: false,
       isComplete: false,
     },
-    {
-      title: "Add a message",
-      children: (
-        <TextArea
-          placeholder="Happy birthday bob."
-          handleChange={handleMessageChange}
-        />
-      ),
-      isComplete: hasMessage,
-      active: false,
-    },
   ];
 
   const disabled = !hasPrompt || !hasFile;

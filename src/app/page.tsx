@@ -162,7 +162,7 @@ export default function Home() {
         {!isDesktop && (
           <div className="fixed bottom-4 w-full px-8">
             <PrimaryButton
-              label="Generate"
+              label="Create Card"
               handleOnClick={() => setShowNavigation(!showNavigation)}
               disabled={false}
             />
