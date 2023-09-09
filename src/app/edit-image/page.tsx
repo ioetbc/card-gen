@@ -9,53 +9,68 @@ export default function App() {
     const img = new Image();
     img.src = URL.createObjectURL(file);
     img.onload = () => {
-      if (img.width !== img.height) {
-        const minVal = Math.min(img.width, img.height);
-        setup(img, 0, 0, minVal, minVal);
-      } else {
-        setup(img, 0, 0, img.width, img.height);
-      }
+      const minVal = Math.min(img.width, img.height);
+      setup(img, 0, 0, minVal, minVal);
     };
   };
 
   const setup = (img, x, y, width, height) => {
     const node = document.getElementById("PictureLayer");
+    const maskNode = document.getElementById("MaskLayer");
     if (node && node.parentNode) {
       node.parentNode.removeChild(node);
     }
+    if (maskNode && maskNode.parentNode) {
+      maskNode.parentNode.removeChild(maskNode);
+    }
 
-    var can = document.createElement("canvas");
+    const can = document.createElement("canvas");
     can.id = "PictureLayer";
     can.width = window.innerWidth * 0.45;
     can.height = window.innerWidth * 0.45;
-    can.style = "margin:auto;";
     const outerCanvas = document.getElementById("outer-canvas");
     outerCanvas.appendChild(can);
 
-    var ctx = can.getContext("2d");
-    ctx.drawImage(img, x, y, width, height, 0, 0, can.width, can.height);
+    const ctx = can.getContext("2d");
+
+    ctx?.drawImage(img, x, y, width, height, 0, 0, can.width, can.height);
     ctx.lineCap = "round";
     ctx.lineWidth = 25;
     ctx.globalCompositeOperation = "destination-out";
+
+    const maskCanvas = document.createElement("canvas");
+    maskCanvas.id = "MaskLayer";
+    maskCanvas.width = window.innerWidth * 0.45;
+    maskCanvas.height = window.innerWidth * 0.45;
+    const maskCtx = maskCanvas.getContext("2d");
+    maskCtx.fillStyle = "black";
+    maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
+    outerCanvas.appendChild(maskCanvas);
+
     let isDrawing = false;
 
     const startDrawing = (event) => {
       isDrawing = true;
       const pos = getPos(event);
-      console.log("start erasing", pos);
       points.setStart(pos.x, pos.y);
     };
     const stopDrawing = () => {
-      console.log("stop erasing");
       isDrawing = false;
     };
     const draw = (event) => {
       if (!isDrawing) return;
       const pos = getPos(event);
       points.newPoint(pos.x, pos.y);
+      maskCtx.strokeStyle = "white";
+      maskCtx.lineCap = "round";
+      maskCtx.lineWidth = 25;
+      maskCtx.beginPath();
+      maskCtx.moveTo(points.lastPoint().x, points.lastPoint().y);
+      maskCtx.lineTo(pos.x, pos.y);
+      maskCtx.stroke();
     };
 
-    var points = (function () {
+    const points = (function () {
       var queue = [],
         qi = 0;
 
@@ -73,8 +88,13 @@ export default function App() {
         queue.push([x, y]);
       }
 
+      function lastPoint() {
+        if (queue.length === 0) return null;
+        return {x: queue[queue.length - 1][0], y: queue[queue.length - 1][1]};
+      }
+
       function tick() {
-        var k = 20; // adjust to limit points drawn per cycle
+        let k = 20;
         if (queue.length - qi > 1) {
           ctx.beginPath();
           if (qi === 0) ctx.moveTo(queue[0][0], queue[0][1]);
@@ -87,49 +107,39 @@ export default function App() {
         }
       }
 
-      setInterval(tick, 50); // adjust cycle time
+      setInterval(tick, 50);
 
       return {
         setStart: setStart,
         newPoint: newPoint,
+        lastPoint: lastPoint,
       };
     })();
 
-    window.addEventListener("touchstart", startDrawing);
-    window.addEventListener("mouseup", stopDrawing);
-    can.addEventListener("touchend", stopDrawing);
     can.addEventListener("mousedown", startDrawing);
     can.addEventListener("mousemove", draw);
-    can.addEventListener("touchmove", draw);
+    window.addEventListener("mouseup", stopDrawing);
 
     function getPos(e) {
-      var rect = can.getBoundingClientRect();
-      if (e.touches) {
-        return {
-          x: e.touches[0].clientX - rect.left,
-          y: e.touches[0].clientY - rect.top,
-        };
-      }
+      const rect = can.getBoundingClientRect();
       return {x: e.clientX - rect.left, y: e.clientY - rect.top};
     }
     setOriginalImage(can.toDataURL());
   };
 
   const downloadOriginal = () => {
-    console.log("download original");
     const node = document.getElementById("PictureLayer");
     if (!node) return;
-    var link = document.createElement("a");
+    const link = document.createElement("a");
     link.download = "original.png";
     link.href = originalImage;
     link.click();
   };
 
   const downloadMask = () => {
-    console.log("download mask");
-    const node = document.getElementById("PictureLayer");
+    const node = document.getElementById("MaskLayer");
     if (!node) return;
-    var link = document.createElement("a");
+    const link = document.createElement("a");
     link.download = "mask.png";
     link.href = node.toDataURL();
     link.click();
@@ -161,24 +171,19 @@ export default function App() {
           id="outer-canvas"
         />
       </div>
-      {/* <div>
+      <div>
         <p>3. Download Images</p>
-        <div style={styles.buttonContainer}>
-          <Button
-            style={{margin: 10}}
-            title="Download Original"
-            onPress={downloadOriginal}
-          />
+        <div>
+          <button style={{margin: 10}} onClick={downloadOriginal}>
+            Download Original
+          </button>
         </div>
-        <View style={styles.buttonContainer}>
-          <Button
-            style={{margin: 10}}
-            title="Download Mask"
-            onPress={downloadMask}
-          />
-        </View>
-      </div> */}
-      {/* <StatusBar style="auto" /> */}
+        <div>
+          <button style={{margin: 10}} onClick={downloadMask}>
+            Download Mask
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

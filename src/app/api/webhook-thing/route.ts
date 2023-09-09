@@ -33,13 +33,13 @@ async function addUserToFirestore(body: TBody) {
     };
   });
 
-  const customerData = {
+  const data = {
     ...body.meta,
     output,
   };
 
   try {
-    const ref = await db.collection("user").add(customerData);
+    const ref = await db.collection("user").add(data);
     console.log(`user added with ID: ${ref.id}`);
   } catch (error) {
     console.error("Error adding customer:", error);
