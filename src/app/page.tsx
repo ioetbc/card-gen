@@ -1,116 +1,57 @@
 "use client";
-import {useEffect, useState} from "react";
-import fetch from "node-fetch";
-import {onSnapshot, doc} from "@firebase/firestore";
+import {useState} from "react";
 import "react-spring-bottom-sheet/dist/style.css";
 
-import {db} from "./firestore";
 import {Navigation} from "./components/navigation";
-import {usePresignedURL} from "./hooks/use-presigned-url";
 import {useGenerateCard} from "./hooks/use-generate-card";
 import {Card} from "./components/card";
 import {TArtisticStyle, TProduct} from "./types";
 import {useMedia} from "./hooks/use-media-query";
 import {PrimaryButton} from "./components/buttons/primary-button";
 import {ProductDetails} from "./components/product-details";
+import {useUserId} from "./hooks/use-user-id";
+import {UseSetUser} from "./hooks/user-set-user";
+import {useFirestoreSnapshot} from "./hooks/use-firestore-snapshot";
+import {useUploadImage} from "./hooks/use-upload-image";
 
 export default function Home() {
   const {isDesktop} = useMedia();
   const [showNavigation, setShowNavigation] = useState<boolean>(isDesktop);
-  const [url, setUrl] = useState("");
   const [prompt, setPrompt] = useState("");
   const [message, setMessage] = useState("");
   const [artisticStyle, setArtisticStyle] = useState<TArtisticStyle | null>(
     null
   );
-  const [images, setImages] = useState<string[]>([]);
-  const [image, setImage] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [product, setProduct] = useState<TProduct>(null);
 
-  const getPresignedURL = usePresignedURL();
+  const userId = useUserId();
+  const {cards} = useFirestoreSnapshot({userId});
   const generateCard = useGenerateCard();
-
-  useEffect(() => {
-    if (!userId) return;
-
-    const userDocRef = doc(db, "user", userId.toString());
-
-    const unsub = onSnapshot(userDocRef, (docSnapshot) => {
-      if (!docSnapshot.exists()) return;
-
-      const gmm = docSnapshot.data();
-
-      console.log("gmm?.url", gmm?.url);
-
-      if (!gmm?.url) return;
-
-      const split = gmm.url.split(",");
-
-      setImages((prev) => [...prev, ...split]);
-      setImage(gmm.url);
-      setLoading(false);
-    });
-
-    return () => {
-      unsub();
-    };
-  }, [userId]);
-
-  useEffect(() => {
-    if (generateCard?.data?.id) {
-      setUserId(generateCard?.data?.id);
-    }
-  }, [generateCard?.data?.id]);
-
-  const uploadFileToSignedURL = async ({
-    url,
-    file,
-  }: {
-    url: string;
-    file: File;
-  }) => {
-    console.log("uploading file", url && file);
-    if (url && file) {
-      return fetch(url, {
-        method: "PUT",
-        body: JSON.stringify(file),
-        headers: {
-          "Content-Type": file.type,
-        },
-      });
-    }
-    return null;
-  };
+  const setUser = UseSetUser();
+  const {upload, downloadURL} = useUploadImage();
 
   const handleGenerateCard = () => {
     setLoading(true);
+    if (!downloadURL) return;
+
     generateCard.mutate({
+      userId,
       prompt,
       artisticStyle,
+      initialImage: downloadURL,
     });
   };
 
   const handleFile = async (file: File) => {
-    console.log("file", file);
-    const {url} = await getPresignedURL.mutateAsync({
-      fileName: file.name,
-      contentType: file.type,
+    await upload({file, userId});
+    if (!downloadURL) return;
+
+    await setUser.mutateAsync({
+      userId,
+      initialImage: downloadURL,
     });
-
-    console.log("efefeefeef", url);
-    const response = await uploadFileToSignedURL({url, file});
-    console.log("response", response);
-
-    setUrl(URL.createObjectURL(file));
   };
-
-  const mockImages = [
-    "https://images.unsplash.com/photo-1680724865725-6b8963f99975?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2043&q=80",
-    "https://images.unsplash.com/photo-1680724864727-eaf2856591d0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2043&q=80",
-    "https://images.unsplash.com/photo-1680798790107-173a774f34ce?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2043&q=80",
-  ];
 
   return (
     <>
@@ -125,33 +66,31 @@ export default function Home() {
           handleArtisticStyleChange={(value) => setArtisticStyle(value)}
           hasPrompt={!!prompt}
           hasMessage={!!message}
-          hasFile={!!getPresignedURL?.data}
-          url={url}
+          // hasFile={!!getPresignedURL?.data}
+          // url={url}
           showNavigation={showNavigation}
           setShowNavigation={setShowNavigation}
         />
         <div className="flex items-center justify-center h-full p-4 my-24">
-          {!mockImages.length && !loading ? (
-            <h2 className="text-2xl text-center">
-              Generate a card by upload an image and tweaking the prompt.
-            </h2>
-          ) : (
-            <div className="flex items-center justify-center md:justify-start gap-8 flex-wrap">
-              {mockImages.map((item: string) => (
-                <Card
-                  key={item}
-                  loading={loading}
-                  url={item}
-                  handleProductChange={() =>
-                    setProduct({
-                      url: item,
-                      title: "Get from GPT",
-                    })
-                  }
-                />
-              ))}
-            </div>
-          )}
+          <div className="flex items-center justify-center md:justify-start gap-8 flex-wrap">
+            {cards.map((card: any) =>
+              card.images.map((image: string) => {
+                return (
+                  <Card
+                    key={image}
+                    loading={loading}
+                    url={image}
+                    handleProductChange={() =>
+                      setProduct({
+                        url: image!,
+                        title: "Get from GPT",
+                      })
+                    }
+                  />
+                );
+              })
+            )}
+          </div>
         </div>
 
         <ProductDetails

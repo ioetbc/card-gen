@@ -92,7 +92,6 @@ export const Navigation = ({
     <BottomSheet
       open={showNavigation}
       onDismiss={() => setShowNavigation && setShowNavigation(false)}
-      maxHeight={window?.innerHeight - 80}
       footer={
         <PrimaryButton
           disabled={disabled}
@@ -103,14 +102,6 @@ export const Navigation = ({
     >
       <div className="h-screen border-r border-grey-600 flex flex-col justify-between p-4">
         <Accordion data={data} />
-
-        {isDesktop && (
-          <PrimaryButton
-            disabled={disabled}
-            label="Generate"
-            handleOnClick={handleGenerateCard}
-          />
-        )}
       </div>
     </BottomSheet>
   );

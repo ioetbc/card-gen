@@ -1,5 +1,3 @@
-import fetch from "node-fetch";
-
 import {STABLE_DIFFUSION_IMAGE_2_IMAGE_URL} from "@/app/constants";
 import {TArtisticStyle} from "@/app/types";
 
@@ -41,7 +39,6 @@ const muddlePromptTogether = ({
 }: MuddlePromptTogetherProps) => {
   console.log("prompt", prompt);
   console.log("artisticStyle", artisticStyle);
-  // "A photograph of a man wearing glasses, cubism, by Vincent van Gogh, detailed, colorful, HD, low key"
 
   const thing = `${prompt}, ${mapArtisticStylc(
     artisticStyle
@@ -51,44 +48,43 @@ const muddlePromptTogether = ({
   return thing;
 };
 
-// get this file from s3
-const testImage =
-  "https://rubberducker-user-uploads.s3.eu-west-2.amazonaws.com/upload/thing.jpeg";
-// const testImage =
-//   "https://rubberducker-user-uploads.s3.eu-west-2.amazonaws.com/upload/test-p2.jpeg";
-
 export async function POST(request: Request) {
-  const {prompt, artisticStyle} = await request.json();
+  const {userId, initialImage, prompt, artisticStyle} = await request.json();
+
+  console.log("initialImage", initialImage);
 
   if (!prompt) {
     return new Response("prompt is required", {status: 400});
   }
 
-  const response = await fetch(STABLE_DIFFUSION_IMAGE_2_IMAGE_URL, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      key: process.env.STABLE_DIFFUSION_API_KEY,
-      prompt: muddlePromptTogether({prompt, artisticStyle}),
-      negative_prompt:
-        "extra limbs, poorly drawn face, poorly drawn hands, disfigured, deformed, bad anatomy, distorted face, multiple faces, multiple chins",
-      init_image: testImage,
-      strength: 0.6,
-      // guidance_scale: 8,
-      width: "512",
-      height: "512",
-      samples: "2",
-      // webhook: "https://hooks.zapier.com/hooks/catch/16204757/399dy56/",
-      webhook:
-        "https://691d-2a00-23c4-2fa5-1201-8520-904f-291a-71bd.ngrok-free.app/api/webhook-thing",
-    }),
-  });
+  try {
+    const response = await fetch(STABLE_DIFFUSION_IMAGE_2_IMAGE_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        key: process.env.STABLE_DIFFUSION_API_KEY,
+        prompt: muddlePromptTogether({prompt, artisticStyle}),
+        negative_prompt:
+          "extra limbs, poorly drawn face, poorly drawn hands, disfigured, deformed, bad anatomy, distorted face, multiple faces, multiple chins",
+        init_image: initialImage,
+        strength: 0.6,
+        width: "512",
+        height: "512",
+        samples: "1",
+        webhook: "https://fdce-188-28-106-173.ngrok-free.app/api/webhook-thing",
+        track_id: userId,
+      }),
+    });
 
-  const data = (await response.json()) as any;
+    const data = (await response.json()) as any;
 
-  console.log("wtf data", data);
+    console.log("wtf data", data);
 
-  return new Response(JSON.stringify(data), {
-    headers: {"Content-Type": "application/json"},
-  });
+    return new Response(JSON.stringify(data), {
+      headers: {"Content-Type": "application/json"},
+    });
+  } catch (cause) {
+    console.log("somethign fucked up cause", cause);
+    return new Response("something went wrong", {status: 500});
+  }
 }
