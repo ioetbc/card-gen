@@ -33,9 +33,7 @@ export async function POST(request: NextRequest) {
 
   const response = {
     images: body.output,
-    guidanceScale: body.meta.guidance_scale,
     initImage: body.meta.init_image,
-    samples: body.meta.n_samples,
     negativePrompt: body.meta.negative_prompt,
     prompt: body.meta.prompt,
     seed: body.meta.seed,
