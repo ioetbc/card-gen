@@ -19,9 +19,10 @@ type NavigationProps = {
   hasPrompt: boolean;
   hasMessage: boolean;
   hasFile: boolean;
-  url: string;
+  url: string | null;
   showNavigation?: boolean;
   setShowNavigation?: (value: boolean) => void;
+  loading: boolean;
 };
 
 export const Navigation = ({
@@ -38,6 +39,7 @@ export const Navigation = ({
   url,
   showNavigation = false,
   setShowNavigation,
+  loading,
 }: NavigationProps) => {
   const data = [
     {
@@ -83,6 +85,7 @@ export const Navigation = ({
               disabled={disabled}
               label="Generate"
               handleOnClick={handleGenerateCard}
+              loading={loading}
             />
           )}
         </div>
@@ -94,6 +97,7 @@ export const Navigation = ({
       onDismiss={() => setShowNavigation && setShowNavigation(false)}
       footer={
         <PrimaryButton
+          loading={loading}
           disabled={disabled}
           label="Generate"
           handleOnClick={handleGenerateCard}

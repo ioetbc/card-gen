@@ -71,7 +71,7 @@ export async function POST(request: Request) {
         width: "512",
         height: "512",
         samples: "1",
-        webhook: "https://fdce-188-28-106-173.ngrok-free.app/api/webhook-thing",
+        webhook: "https://edaf-188-28-106-173.ngrok-free.app/api/webhook-thing",
         track_id: userId,
       }),
     });

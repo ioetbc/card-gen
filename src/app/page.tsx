@@ -5,13 +5,12 @@ import "react-spring-bottom-sheet/dist/style.css";
 import {Navigation} from "./components/navigation";
 import {useGenerateCard} from "./hooks/use-generate-card";
 import {Card} from "./components/card";
-import {TArtisticStyle, TProduct} from "./types";
+import {TArtisticStyle, TCard, TProduct} from "./types";
 import {useMedia} from "./hooks/use-media-query";
 import {PrimaryButton} from "./components/buttons/primary-button";
 import {ProductDetails} from "./components/product-details";
 import {useUserId} from "./hooks/use-user-id";
-import {UseSetUser} from "./hooks/user-set-user";
-import {useFirestoreSnapshot} from "./hooks/use-firestore-snapshot";
+import {useSetUser} from "./hooks/user-set-user";
 import {useUploadImage} from "./hooks/use-upload-image";
 
 export default function Home() {
@@ -24,23 +23,28 @@ export default function Home() {
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [product, setProduct] = useState<TProduct>(null);
+  const [cards, setCards] = useState<TCard[]>([]);
 
   const userId = useUserId();
-  const {cards} = useFirestoreSnapshot({userId});
   const generateCard = useGenerateCard();
-  const setUser = UseSetUser();
+  const setUser = useSetUser();
   const {upload, downloadURL} = useUploadImage();
 
-  const handleGenerateCard = () => {
+  const handleGenerateCard = async () => {
     setLoading(true);
     if (!downloadURL) return;
 
-    generateCard.mutate({
+    const data = await generateCard.mutateAsync({
       userId,
       prompt,
       artisticStyle,
       initialImage: downloadURL,
     });
+
+    setCards(data.output);
+    setShowNavigation(false);
+
+    console.log("data", data);
   };
 
   const handleFile = async (file: File) => {
@@ -66,30 +70,27 @@ export default function Home() {
           handleArtisticStyleChange={(value) => setArtisticStyle(value)}
           hasPrompt={!!prompt}
           hasMessage={!!message}
-          // hasFile={!!getPresignedURL?.data}
-          // url={url}
+          loading={loading}
+          hasFile={!!downloadURL}
+          url={downloadURL}
           showNavigation={showNavigation}
           setShowNavigation={setShowNavigation}
         />
         <div className="flex items-center justify-center h-full p-4 my-24">
           <div className="flex items-center justify-center md:justify-start gap-8 flex-wrap">
-            {cards.map((card: any) =>
-              card.images.map((image: string) => {
-                return (
-                  <Card
-                    key={image}
-                    loading={loading}
-                    url={image}
-                    handleProductChange={() =>
-                      setProduct({
-                        url: image!,
-                        title: "Get from GPT",
-                      })
-                    }
-                  />
-                );
-              })
-            )}
+            {cards.map((card: any) => (
+              <Card
+                key={card}
+                loading={loading}
+                url={card}
+                handleProductChange={() =>
+                  setProduct({
+                    url: card,
+                    title: "Get from GPT",
+                  })
+                }
+              />
+            ))}
           </div>
         </div>
 

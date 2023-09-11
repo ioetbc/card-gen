@@ -24,3 +24,7 @@ export type TProduct = {
   url: string;
   title: string;
 } | null;
+
+export type TCard = {
+  url: string;
+};

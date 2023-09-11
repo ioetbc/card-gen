@@ -4,7 +4,7 @@ import {useDropzone} from "react-dropzone";
 
 type FileDropzoneProps = {
   onFile: (file: File) => void;
-  url: string;
+  url: string | null;
 };
 
 export const DragDrop: React.FC<FileDropzoneProps> = ({onFile, url}) => {

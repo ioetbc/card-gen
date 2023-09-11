@@ -32,7 +32,6 @@ export async function POST(request: NextRequest) {
   if (body.status !== "success") return new Response();
 
   const response = {
-    userId: body.track_id,
     images: body.output,
     guidanceScale: body.meta.guidance_scale,
     initImage: body.meta.init_image,
@@ -44,10 +43,9 @@ export async function POST(request: NextRequest) {
     strength: body.meta.strength,
   };
 
-  try {
-    const userId = response.userId;
+  const userId = body.track_id;
 
-    // Reference to a new card under the user's cards sub-collection
+  try {
     const cardDocRef = db
       .collection("user")
       .doc(userId)
