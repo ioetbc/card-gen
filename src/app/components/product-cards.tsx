@@ -2,6 +2,8 @@ import Image from "next/image";
 import React, {useState} from "react";
 import {Skeleton} from "./skeleton";
 import {PrimaryButton} from "./buttons/primary-button";
+import {Tag} from "./tag";
+import {User} from "./user";
 
 type ProductCardProps = {
   url: string;
@@ -35,28 +37,22 @@ export const ProductCard = ({url, prompt, user}: ProductCardProps) => {
       <div className="border border-black px-4 flex items-center">
         <div className="grid grid-cols-4 gap-4">
           <div className="flex items-center border-r border-black pr-4">
-            <h3 className="text-xl col-span-1">£32</h3>
+            <h3 className="text-xl col-span-1">
+              <Tag label="£32" />
+            </h3>
           </div>
-          <div className="flex col-span-3 py-4">
-            <div className="w-8 h-8 rounded-full overflow-hidden">
-              <Image
-                src={user.avatar}
-                width={32}
-                height={32}
-                alt="user avatar"
-              />
-            </div>
-            <p className="ml-2">{user.name}</p>
-          </div>
+          <User name={user.name} avatar={user.avatar} />
         </div>
       </div>
       <div className="border-l border-r border-b border-black px-4 py-4 flex flex-col gap-2">
-        <div className="flex gap-2">
-          <p className={!readMore ? "line-clamp-2" : ""}>{prompt}</p>
+        <div className="flex gap-4">
+          <p className={`${!readMore ? "line-clamp-3" : ""} text-sm`}>
+            {prompt}
+          </p>
           <Image src="/clipboard.svg" width={24} height={24} alt="logo" />
         </div>
-        <p className="underline" onClick={() => setReadMore(!readMore)}>
-          read more
+        <p className="underline text-xs" onClick={() => setReadMore(!readMore)}>
+          {readMore ? "Show less" : "Show more"}
         </p>
       </div>
     </div>

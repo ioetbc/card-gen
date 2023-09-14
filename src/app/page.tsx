@@ -105,7 +105,7 @@ export default function Home() {
         />
 
         {!isDesktop && (
-          <div className="fixed bottom-4 right-0 left-0 px-4">
+          <div className="fixed bottom-4 right-0 left-0 px-16">
             <PrimaryButton
               label="Create Card"
               handleOnClick={() => setShowNavigation(!showNavigation)}
