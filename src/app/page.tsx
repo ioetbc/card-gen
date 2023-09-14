@@ -12,6 +12,9 @@ import {ProductDetails} from "./components/product-details";
 import {useUserId} from "./hooks/use-user-id";
 import {useSetUser} from "./hooks/user-set-user";
 import {useUploadImage} from "./hooks/use-upload-image";
+import {Header} from "./components/Header";
+import {MOCK_CARDS_CREATE_NEW_FIRESTORE_COLLECTION} from "./constants";
+import {ProductCard} from "./components/product-cards";
 
 export default function Home() {
   const {isDesktop} = useMedia();
@@ -24,6 +27,7 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [product, setProduct] = useState<TProduct>(null);
   const [cards, setCards] = useState<TCard[]>([]);
+  const [headerOpen, setHeaderOpen] = useState(false);
 
   const userId = useUserId();
   const generateCard = useGenerateCard();
@@ -59,7 +63,14 @@ export default function Home() {
 
   return (
     <>
-      <main className="md:grid md:grid-cols-[1fr,3fr] gap-4 relative">
+      <main
+        className="md:grid md:grid-cols-[1fr,3fr] gap-4 relative px-4 py-4"
+        onClick={() => headerOpen && setHeaderOpen(false)}
+      >
+        <Header
+          headerOpen={headerOpen}
+          setHeaderOpen={() => setHeaderOpen(!headerOpen)}
+        />
         <Navigation
           isDesktop={isDesktop}
           handlePromptChange={(value) => setPrompt(value)}
@@ -76,22 +87,16 @@ export default function Home() {
           showNavigation={showNavigation}
           setShowNavigation={setShowNavigation}
         />
-        <div className="flex items-center justify-center h-full p-4 my-24">
-          <div className="flex items-center justify-center md:justify-start gap-8 flex-wrap">
-            {cards.map((card: any) => (
-              <Card
-                key={card}
-                loading={loading}
-                url={card}
-                handleProductChange={() =>
-                  setProduct({
-                    url: card,
-                    title: "Get from GPT",
-                  })
-                }
-              />
-            ))}
-          </div>
+
+        <div className="flex flex-col sm:flex-row gap-8 py-12">
+          {MOCK_CARDS_CREATE_NEW_FIRESTORE_COLLECTION.map((card: any) => (
+            <ProductCard
+              key={card.id}
+              prompt={card.prompt}
+              url={card.url}
+              user={card.user}
+            />
+          ))}
         </div>
 
         <ProductDetails
@@ -100,7 +105,7 @@ export default function Home() {
         />
 
         {!isDesktop && (
-          <div className="fixed bottom-4 w-full px-8">
+          <div className="fixed bottom-4 right-0 left-0 px-4">
             <PrimaryButton
               label="Create Card"
               handleOnClick={() => setShowNavigation(!showNavigation)}

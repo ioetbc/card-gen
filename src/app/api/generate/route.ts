@@ -69,9 +69,9 @@ export async function POST(request: Request) {
         init_image: initialImage,
         strength: 0.6,
         width: "512",
-        height: "512",
+        height: "700",
         samples: "1",
-        webhook: "https://edaf-188-28-106-173.ngrok-free.app/api/webhook-thing",
+        webhook: "https://04c7-62-255-165-242.ngrok-free.app/api/webhook-thing",
         track_id: userId,
       }),
     });
