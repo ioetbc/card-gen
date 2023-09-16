@@ -1,5 +1,8 @@
+"use client";
 import React from "react";
 import Image from "next/image";
+import {useRouter} from "next/navigation";
+
 import {MENU_ITEMS} from "../constants";
 
 type HeaderProps = {
@@ -8,13 +11,21 @@ type HeaderProps = {
 };
 
 export const Header = ({headerOpen, setHeaderOpen}: HeaderProps) => {
+  const router = useRouter();
+
   return (
     <div
-      className="py-4 border border-black"
+      className="py-4 border border-black fixed  bg-white z-50 left-4 top-0 right-4"
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex items-center justify-between px-4">
-        <Image src="/logo.svg" width={200} height={40} alt="logo" />
+        <Image
+          src="/logo.svg"
+          width={200}
+          height={40}
+          alt="logo"
+          onClick={() => router.push("/")}
+        />
         <Image
           src="/menu.svg"
           width={40}

@@ -1,4 +1,8 @@
-import {STABLE_DIFFUSION_IMAGE_2_IMAGE_URL} from "@/app/constants";
+import {
+  NEGATIVE_PROMPT,
+  STABLE_DIFFUSION_IMAGE_2_IMAGE_URL,
+  STABLE_DIFFUSION_TEXT_2_IMAGE_URL,
+} from "@/app/constants";
 import {TArtisticStyle} from "@/app/types";
 
 type MuddlePromptTogetherProps = {
@@ -57,32 +61,34 @@ export async function POST(request: Request) {
     return new Response("prompt is required", {status: 400});
   }
 
+  const api = initialImage
+    ? STABLE_DIFFUSION_IMAGE_2_IMAGE_URL
+    : STABLE_DIFFUSION_TEXT_2_IMAGE_URL;
+
+  const body = {
+    key: process.env.STABLE_DIFFUSION_API_KEY,
+    prompt: muddlePromptTogether({prompt, artisticStyle}),
+    negative_prompt: NEGATIVE_PROMPT,
+    ...(initialImage && {init_image: initialImage}),
+    strength: 0.6,
+    width: "512",
+    height: "512",
+    samples: "1",
+    webhook: "https://3f14-188-28-106-173.ngrok-free.app/api/webhook-thing",
+    track_id: userId,
+  };
+
   try {
-    const response = await fetch(STABLE_DIFFUSION_IMAGE_2_IMAGE_URL, {
+    const response = await fetch(api, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        key: process.env.STABLE_DIFFUSION_API_KEY,
-        prompt: muddlePromptTogether({prompt, artisticStyle}),
-        negative_prompt:
-          "extra limbs, poorly drawn face, poorly drawn hands, disfigured, deformed, bad anatomy, distorted face, multiple faces, multiple chins",
-        init_image: initialImage,
-        strength: 0.6,
-        width: "512",
-        height: "700",
-        samples: "1",
-        webhook: "https://04c7-62-255-165-242.ngrok-free.app/api/webhook-thing",
-        track_id: userId,
-      }),
+      body: JSON.stringify(body),
     });
 
-    const data = (await response.json()) as any;
-
+    const data = await response.json();
     console.log("wtf data", data);
 
-    return new Response(JSON.stringify(data), {
-      headers: {"Content-Type": "application/json"},
-    });
+    return new Response();
   } catch (cause) {
     console.log("somethign fucked up cause", cause);
     return new Response("something went wrong", {status: 500});

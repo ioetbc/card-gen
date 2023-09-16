@@ -5,7 +5,7 @@ type UseGenerateCardProps = {
   userId: string;
   prompt: string;
   artisticStyle: TArtisticStyle | null;
-  initialImage: string;
+  initialImage?: string;
 };
 
 export const useGenerateCard = () => {

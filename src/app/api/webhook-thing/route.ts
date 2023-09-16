@@ -1,5 +1,11 @@
 import {NextRequest} from "next/server";
 import {db} from "../firebase";
+import OpenAI from "openai";
+
+import mapKeys from "lodash/mapKeys";
+import camelCase from "lodash/camelCase";
+import set from "lodash/set";
+import {TCard} from "@/app/types";
 
 type Meta = {
   H: number;
@@ -26,20 +32,39 @@ type TBody = {
   output: string[];
 };
 
+const getPrompt = (prompt: string) => {
+  return `Can you summarise this in a short sentence between 2 and 4 words ### ${prompt}`;
+};
+
 export async function POST(request: NextRequest) {
   const body = (await request.json()) as TBody;
 
   if (body.status !== "success") return new Response();
 
+  const openai = new OpenAI({
+    apiKey: process.env.GPT_API_SECRET,
+  });
+
+  console.log("body mate", body);
+
   const response = {
+    ...mapKeys(body.meta, (_, key) => camelCase(key)),
     images: body.output,
-    initImage: body.meta.init_image,
-    negativePrompt: body.meta.negative_prompt,
-    prompt: body.meta.prompt,
-    seed: body.meta.seed,
-    steps: body.meta.steps,
-    strength: body.meta.strength,
-  };
+  } as TCard;
+
+  if (response.prompt) {
+    const content = getPrompt(response.prompt);
+    console.log("content", content);
+
+    const gptResponse = await openai.chat.completions.create({
+      messages: [{role: "user", content}],
+      model: "gpt-3.5-turbo",
+    });
+
+    console.log("gptResponse", gptResponse.choices);
+
+    set(response, "title", gptResponse.choices[0].message.content);
+  }
 
   const userId = body.track_id;
 

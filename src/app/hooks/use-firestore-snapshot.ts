@@ -1,16 +1,12 @@
 import {query, collection, onSnapshot} from "firebase/firestore";
 import {useEffect, useState} from "react";
 import {db} from "../firestore";
-
-interface Card {
-  // Define the shape of your card data here, for example:
-  imageUrl?: string;
-  userId?: string;
-  // Add other card properties if needed
-}
+import {TCard} from "../types";
 
 export const useFirestoreSnapshot = ({userId}: {userId: string}) => {
-  const [cards, setCards] = useState<Card[]>([]);
+  const [cards, setCards] = useState<TCard[]>([]);
+
+  console.log("userId", userId);
 
   useEffect(() => {
     if (!userId) {
@@ -22,18 +18,20 @@ export const useFirestoreSnapshot = ({userId}: {userId: string}) => {
     const cardsQuery = query(cardsCollectionRef);
 
     const unsubscribe = onSnapshot(cardsQuery, (querySnapshot) => {
-      const cardsArray: Card[] = [];
+      const cardsArray: TCard[] = [];
       querySnapshot.forEach((doc) => {
         cardsArray.push({
           ...doc.data(),
           id: doc.id,
-        } as Card);
+        } as TCard);
       });
+
+      console.log("cardsArray", cardsArray);
       setCards(cardsArray);
     });
 
     return () => unsubscribe();
-  }, [userId]); // include userId in the dependency array
+  }, [userId]);
 
   return {cards};
 };

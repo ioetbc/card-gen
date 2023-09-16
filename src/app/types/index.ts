@@ -1,3 +1,4 @@
+import {ChatCompletionMessage} from "openai/resources/chat/index.mjs";
 import {ReactNode} from "react";
 
 export type TArtisticStyle =
@@ -26,5 +27,20 @@ export type TProduct = {
 } | null;
 
 export type TCard = {
-  url: string;
+  guidanceScale: number;
+  id: string;
+  images: string[];
+  initImage: string;
+  negativePrompt: string;
+  prompt: string;
+  samples: number;
+  seed: number;
+  steps: number;
+  strength: number;
+  title: string;
+};
+
+export type TUser = {
+  name: string;
+  avatar: string;
 };

@@ -5,5 +5,5 @@ type TagProps = {
 };
 
 export const Tag = ({label}: TagProps) => {
-  return <p className="text-sm">£32</p>;
+  return <p className="text-sm">{label}</p>;
 };

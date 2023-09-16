@@ -1,55 +1,27 @@
 "use client";
 import {useState} from "react";
 import "react-spring-bottom-sheet/dist/style.css";
+import {useRouter} from "next/navigation";
 
-import {Navigation} from "./components/navigation";
-import {useGenerateCard} from "./hooks/use-generate-card";
-import {Card} from "./components/card";
-import {TArtisticStyle, TCard, TProduct} from "./types";
 import {useMedia} from "./hooks/use-media-query";
 import {PrimaryButton} from "./components/buttons/primary-button";
-import {ProductDetails} from "./components/product-details";
+// import {ProductDetails} from "./components/product-details";
 import {useUserId} from "./hooks/use-user-id";
 import {useSetUser} from "./hooks/user-set-user";
 import {useUploadImage} from "./hooks/use-upload-image";
-import {Header} from "./components/Header";
 import {MOCK_CARDS_CREATE_NEW_FIRESTORE_COLLECTION} from "./constants";
-import {ProductCard} from "./components/product-cards";
+import {ProductCard} from "./components/product-card";
+import {Filters} from "./components/filters";
+import {TProduct} from "./types";
 
 export default function Home() {
   const {isDesktop} = useMedia();
-  const [showNavigation, setShowNavigation] = useState<boolean>(isDesktop);
-  const [prompt, setPrompt] = useState("");
-  const [message, setMessage] = useState("");
-  const [artisticStyle, setArtisticStyle] = useState<TArtisticStyle | null>(
-    null
-  );
-  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
   const [product, setProduct] = useState<TProduct>(null);
-  const [cards, setCards] = useState<TCard[]>([]);
-  const [headerOpen, setHeaderOpen] = useState(false);
 
   const userId = useUserId();
-  const generateCard = useGenerateCard();
   const setUser = useSetUser();
   const {upload, downloadURL} = useUploadImage();
-
-  const handleGenerateCard = async () => {
-    setLoading(true);
-    if (!downloadURL) return;
-
-    const data = await generateCard.mutateAsync({
-      userId,
-      prompt,
-      artisticStyle,
-      initialImage: downloadURL,
-    });
-
-    setCards(data.output);
-    setShowNavigation(false);
-
-    console.log("data", data);
-  };
 
   const handleFile = async (file: File) => {
     await upload({file, userId});
@@ -62,59 +34,33 @@ export default function Home() {
   };
 
   return (
-    <>
-      <main
-        className="md:grid md:grid-cols-[1fr,3fr] gap-4 relative px-4 py-4"
-        onClick={() => headerOpen && setHeaderOpen(false)}
-      >
-        <Header
-          headerOpen={headerOpen}
-          setHeaderOpen={() => setHeaderOpen(!headerOpen)}
-        />
-        <Navigation
-          isDesktop={isDesktop}
-          handlePromptChange={(value) => setPrompt(value)}
-          handleMessageChange={(value) => setMessage(value)}
-          handleFile={handleFile}
-          handleGenerateCard={handleGenerateCard}
-          hasArtisticStyle={!!artisticStyle}
-          handleArtisticStyleChange={(value) => setArtisticStyle(value)}
-          hasPrompt={!!prompt}
-          hasMessage={!!message}
-          loading={loading}
-          hasFile={!!downloadURL}
-          url={downloadURL}
-          showNavigation={showNavigation}
-          setShowNavigation={setShowNavigation}
-        />
+    <main className="md:grid md:grid-cols-[1fr,3fr] gap-4 relative px-4 py-4">
+      <div className="flex flex-col sm:flex-row gap-8 py-20">
+        <Filters />
 
-        <div className="flex flex-col sm:flex-row gap-8 py-12">
-          {MOCK_CARDS_CREATE_NEW_FIRESTORE_COLLECTION.map((card: any) => (
-            <ProductCard
-              key={card.id}
-              prompt={card.prompt}
-              url={card.url}
-              user={card.user}
-            />
-          ))}
+        {MOCK_CARDS_CREATE_NEW_FIRESTORE_COLLECTION.map((card: any) => (
+          <ProductCard
+            key={card.id}
+            prompt={card.prompt}
+            url={card.url}
+            user={card.user}
+            title="Something"
+          />
+        ))}
+      </div>
+
+      {/* <ProductDetails product={product} handleClose={() => setProduct(null)} /> */}
+
+      {!isDesktop && (
+        <div className="fixed bottom-4 right-0 left-0 px-16">
+          <PrimaryButton
+            label="Create Card"
+            handleOnClick={() => router.push("my-cards")}
+            disabled={false}
+          />
         </div>
-
-        <ProductDetails
-          product={product}
-          handleClose={() => setProduct(null)}
-        />
-
-        {!isDesktop && (
-          <div className="fixed bottom-4 right-0 left-0 px-16">
-            <PrimaryButton
-              label="Create Card"
-              handleOnClick={() => setShowNavigation(!showNavigation)}
-              disabled={false}
-            />
-          </div>
-        )}
-      </main>
-    </>
+      )}
+    </main>
   );
 }
 
