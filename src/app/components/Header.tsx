@@ -6,37 +6,40 @@ import {useRouter} from "next/navigation";
 import {MENU_ITEMS} from "../constants";
 
 type HeaderProps = {
-  headerOpen: boolean;
-  setHeaderOpen: (value: boolean) => void;
+  menuOpen: boolean;
+  setMenuOpen: (value: boolean) => void;
+  component?: React.ReactNode;
 };
 
-export const Header = ({headerOpen, setHeaderOpen}: HeaderProps) => {
+export const Header = ({menuOpen, setMenuOpen, component}: HeaderProps) => {
   const router = useRouter();
 
   return (
     <div
-      className="py-4 border border-black fixed  bg-white z-50 left-4 top-0 right-4"
+      className="py-4 border border-gray-400 relative bg-white z-50 rounded-xl shadow-md"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex items-center justify-between px-4">
-        <Image
-          src="/logo.svg"
-          width={200}
-          height={40}
-          alt="logo"
-          onClick={() => router.push("/")}
-        />
-        <Image
-          src="/menu.svg"
-          width={40}
-          height={40}
-          alt="logo"
-          className="cursor-pointer"
-          onClick={() => setHeaderOpen(!open)}
-        />
+      <div className="px-4 pb-4 flex gap-4 flex-col">
+        <div className="flex items-center justify-between">
+          <Image
+            src="/logo.svg"
+            width={200}
+            height={40}
+            alt="logo"
+            onClick={() => router.push("/")}
+          />
+          <Image
+            src="/menu.svg"
+            width={40}
+            height={40}
+            alt="logo"
+            className="cursor-pointer"
+            onClick={() => setMenuOpen(!open)}
+          />
+        </div>
       </div>
-
-      {headerOpen && (
+      <div className="border-t border-gray-200 pt-4">{component}</div>
+      {menuOpen && (
         <div className="pt-4">
           {MENU_ITEMS.map((item) => (
             <div

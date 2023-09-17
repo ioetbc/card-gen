@@ -9,17 +9,19 @@ import {PrimaryButton} from "./components/buttons/primary-button";
 import {useUserId} from "./hooks/use-user-id";
 import {useSetUser} from "./hooks/user-set-user";
 import {useUploadImage} from "./hooks/use-upload-image";
-import {MOCK_CARDS_CREATE_NEW_FIRESTORE_COLLECTION} from "./constants";
+import {MOCK_CARDS_CREATE_NEW_FIRESTORE_COLLECTION, USER} from "./constants";
 import {ProductCard} from "./components/product-card";
 import {Filters} from "./components/filters";
-import {TProduct} from "./types";
+import {useFirestoreSnapshot} from "./hooks/use-firestore-snapshot";
 
 export default function Home() {
   const {isDesktop} = useMedia();
   const router = useRouter();
-  const [product, setProduct] = useState<TProduct>(null);
-
   const userId = useUserId();
+  const {cards} = useFirestoreSnapshot({
+    userId,
+  });
+
   const setUser = useSetUser();
   const {upload, downloadURL} = useUploadImage();
 
@@ -38,18 +40,16 @@ export default function Home() {
       <div className="flex flex-col sm:flex-row gap-8 py-20">
         <Filters />
 
-        {MOCK_CARDS_CREATE_NEW_FIRESTORE_COLLECTION.map((card: any) => (
+        {cards.map((card) => (
           <ProductCard
             key={card.id}
             prompt={card.prompt}
-            url={card.url}
-            user={card.user}
-            title="Something"
+            url={card?.images?.[0]}
+            title={card.title}
+            user={USER}
           />
         ))}
       </div>
-
-      {/* <ProductDetails product={product} handleClose={() => setProduct(null)} /> */}
 
       {!isDesktop && (
         <div className="fixed bottom-4 right-0 left-0 px-16">

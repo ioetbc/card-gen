@@ -6,8 +6,8 @@ import {TUser} from "../types";
 
 type ProductCardProps = {
   title: string;
-  url: string;
   prompt: string;
+  url?: string;
   user: TUser;
 };
 
@@ -15,32 +15,32 @@ export const ProductCard = ({url, prompt, user, title}: ProductCardProps) => {
   const [readMore, setReadMore] = useState(false);
 
   return (
-    <div>
+    <div className="shadow-card">
       <div
-        className="relative w-full aspect-square bg-center bg-no-repeat bg-cover border border-black"
-        style={{backgroundImage: "url(/envelope.webp)"}}
+        className="relative w-full aspect-square bg-center bg-no-repeat bg-cover"
+        // style={{backgroundImage: "url(/envelope.webp)"}}
       >
-        <div className="absolute right-0 left-0 bottom-0 top-0 m-auto w-90 h-90 shadow-custom bg-white flex items-center justify-center">
+        <Image src={url!} fill={true} alt="thing" />
+        {/* <div className="absolute right-0 left-0 bottom-0 top-0 m-auto w-full h-full shadow-custom bg-white flex items-center justify-center">
           <div
             className="w-40 h-40 bg-center bg-no-repeat bg-cover"
             style={{backgroundImage: `url(${url})`}}
           ></div>
         </div>
+      */}
       </div>
-      <div className="p-4  border-l border-r border-black flex items-center pr-4">
+      <div className="p-4 flex items-center pr-4 bg-white">
         <h3 className="text-xl">{title}</h3>
       </div>
-      <div className="border border-black px-4 flex items-center">
+      <div className="border-t border-b border-black px-4 flex items-center bg-white">
         <div className="grid grid-cols-4 gap-4">
-          <div className="flex items-center col-span-2 border-r border-black pr-4">
-            <h3 className="text-xl ">
-              <Tag label="130 sold" />
-            </h3>
+          <div className="flex items-center col-span-2 border-black border-r pr-4">
+            <Tag label="130 sold" />
           </div>
-          {user && <User name={user.name} avatar={user.avatar} />}
+          <User name={user.name} avatar={user.avatar} />
         </div>
       </div>
-      <div className="border-l border-r border-b border-black px-4 py-4 flex flex-col gap-2">
+      <div className=" px-4 py-4 flex flex-col gap-2 bg-white">
         <p className={`${!readMore ? "line-clamp-3" : ""} text-sm`}>{prompt}</p>
         <p className="underline text-xs" onClick={() => setReadMore(!readMore)}>
           {readMore ? "Show less" : "Show more"}

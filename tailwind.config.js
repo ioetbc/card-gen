@@ -19,7 +19,15 @@ module.exports = {
         90: "90%",
       },
       boxShadow: {
-        custom: "5px 5px 24px rgba(0, 0, 0, 0.50)",
+        custom: "2px 2px 4px rgba(0, 0, 0, 0.25)",
+        customOld: "5px 5px 24px rgba(0, 0, 0, 0.50)",
+        card: "4px 4px 0px rgba(0, 0, 0, 0.15)",
+      },
+      colors: {
+        primary: {
+          100: "#5d58b430",
+          200: "#8079ff30",
+        },
       },
     },
   },
