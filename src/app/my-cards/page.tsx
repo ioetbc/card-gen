@@ -13,6 +13,7 @@ import {Card} from "../components/card";
 import {Prompt} from "../components/prompt";
 import {Header} from "../components/Header";
 import {Button} from "../components/buttons/primary-button";
+import Image from "next/image";
 
 export default function MyCards() {
   const [loading, setLoading] = useState(false);
@@ -60,15 +61,15 @@ export default function MyCards() {
                     handleSubmit={console.log}
                     loading={false}
                   />
-                  <div className="flex gap-4 justify-end px-4">
-                    <Button
+                  <div className="flex gap-4 justify-end px-4 pb-4">
+                    {/* <Button
                       size="fit"
                       label="Cancel"
                       type="secondary"
                       handleOnClick={() => setHeaderOpen(false)}
-                    />
+                    /> */}
                     <Button
-                      size="full"
+                      size="fit"
                       label="Generate"
                       type="primary"
                       handleOnClick={console.log}
@@ -77,12 +78,15 @@ export default function MyCards() {
                 </div>
               </div>
             ) : (
-              <div className="px-4">
+              <div className="p-4">
                 <Button
                   size="full"
-                  type="secondary"
+                  type="primary"
                   label="Create new card"
                   handleOnClick={() => setHeaderOpen(!headerOpen)}
+                  icon={
+                    <Image src="/wand.svg" width={20} height={20} alt="logo" />
+                  }
                 />
               </div>
             )}
@@ -97,11 +101,22 @@ export default function MyCards() {
             {cards.map((card) => (
               <ProductCardV2
                 key={card.id}
+                id={card.id}
                 image={card?.images?.[0]}
                 prompt={card.prompt}
                 title={card.title}
                 price={5}
-                hasBookmarked={false}
+                hasBookmarked={card.saved}
+                cta={
+                  <div className="flex justify-end">
+                    <Button
+                      size="fit"
+                      label="Add message"
+                      type="primary"
+                      handleOnClick={console.log}
+                    />
+                  </div>
+                }
               />
             ))}
           </div>

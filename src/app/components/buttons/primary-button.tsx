@@ -57,12 +57,10 @@ export const Button = ({
             🔄
           </motion.div>
         ) : (
-          <>
-            {label}
-            {icon && (
-              <div style={{position: "absolute", right: 8, top: 0}}>{icon}</div>
-            )}
-          </>
+          <div className="flex gap-2">
+            <p className="text-sm">{label}</p>
+            {icon && icon}
+          </div>
         )}
       </div>
     </button>

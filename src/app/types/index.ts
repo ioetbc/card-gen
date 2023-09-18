@@ -38,6 +38,7 @@ export type TCard = {
   steps: number;
   strength: number;
   title: string;
+  saved: boolean;
 };
 
 export type TUser = {

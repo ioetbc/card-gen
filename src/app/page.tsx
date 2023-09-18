@@ -4,17 +4,24 @@ import "react-spring-bottom-sheet/dist/style.css";
 import {useRouter} from "next/navigation";
 
 import {useMedia} from "./hooks/use-media-query";
-import {PrimaryButton} from "./components/buttons/primary-button";
+import {Button} from "./components/buttons/primary-button";
 // import {ProductDetails} from "./components/product-details";
 import {useUserId} from "./hooks/use-user-id";
 import {useSetUser} from "./hooks/user-set-user";
 import {useUploadImage} from "./hooks/use-upload-image";
 import {MOCK_CARDS_CREATE_NEW_FIRESTORE_COLLECTION, USER} from "./constants";
 import {ProductCard} from "./components/product-card";
+import {ProductCardV2} from "./components/product-card-v2";
 import {Filters} from "./components/filters";
 import {useFirestoreSnapshot} from "./hooks/use-firestore-snapshot";
+import {Header} from "./components/Header";
+import {Prompt} from "./components/prompt";
+import Image from "next/image";
 
 export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [headerOpen, setHeaderOpen] = useState(false);
+
   const {isDesktop} = useMedia();
   const router = useRouter();
   const userId = useUserId();
@@ -36,30 +43,84 @@ export default function Home() {
   };
 
   return (
-    <main className="md:grid md:grid-cols-[1fr,3fr] gap-4 relative px-4 py-4">
-      <div className="flex flex-col sm:flex-row gap-8 py-20">
-        <Filters />
-
+    <main className="relative px-4 py-4">
+      <Header
+        menuOpen={menuOpen}
+        setMenuOpen={() => setMenuOpen(!menuOpen)}
+        component={
+          <>
+            {headerOpen ? (
+              <div>
+                <p className="p-4 text-center text-sm  border-b border-gray-200">
+                  Use the input below to generate a new card based off your
+                  prompt. Upload an image for a starting point for Stable
+                  Diffusion.
+                </p>
+                <div className="flex flex-col gap-4">
+                  <Prompt
+                    prompt="something"
+                    setPrompt={console.log}
+                    handleSubmit={console.log}
+                    loading={false}
+                  />
+                  <div className="flex gap-4 justify-end px-4">
+                    <Button
+                      size="fit"
+                      label="Cancel"
+                      type="secondary"
+                      handleOnClick={() => setHeaderOpen(false)}
+                    />
+                    <Button
+                      size="full"
+                      label="Generate"
+                      type="primary"
+                      handleOnClick={console.log}
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4">
+                {/* <Filters /> */}
+                <Button
+                  label="Create Card"
+                  handleOnClick={() => router.push("my-cards")}
+                  disabled={false}
+                  type="primary"
+                  size="full"
+                  icon={
+                    <Image src="/wand.svg" width={20} height={20} alt="logo" />
+                  }
+                />
+              </div>
+            )}
+          </>
+        }
+      />
+      <div className="flex flex-col sm:flex-row gap-8 py-8">
         {cards.map((card) => (
-          <ProductCard
+          <ProductCardV2
             key={card.id}
+            id={card.id}
+            image={card?.images?.[0]}
             prompt={card.prompt}
-            url={card?.images?.[0]}
             title={card.title}
-            user={USER}
+            price={5}
+            hasBookmarked={card.saved}
           />
         ))}
       </div>
-
-      {!isDesktop && (
+      {/* {!isDesktop && (
         <div className="fixed bottom-4 right-0 left-0 px-16">
-          <PrimaryButton
+          <Button
             label="Create Card"
             handleOnClick={() => router.push("my-cards")}
             disabled={false}
+            type="primary"
+            size="full"
           />
         </div>
-      )}
+      )} */}
     </main>
   );
 }
