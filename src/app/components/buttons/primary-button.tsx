@@ -34,11 +34,11 @@ export const Button = ({
 
   return (
     <button
-      className={`${size === "full" ? "w-full" : "w-fit"} ${
+      className={` ${size === "full" ? "w-full" : "w-fit"} ${
         isPrimary
           ? "text-white bg-black border border-transparent"
           : "text-black bg-white border border-gray-400"
-      } py-4 px-8 rounded-lg shadow-inner ${
+      } py-4 px-8 rounded-lg shadow-button ${
         disabled || loading
           ? "cursor-not-allowed bg-gray-800"
           : "cursor-pointer bg-black"

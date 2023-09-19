@@ -3,16 +3,11 @@ import {useState} from "react";
 import "react-spring-bottom-sheet/dist/style.css";
 import {useRouter} from "next/navigation";
 
-import {useMedia} from "./hooks/use-media-query";
 import {Button} from "./components/buttons/primary-button";
-// import {ProductDetails} from "./components/product-details";
 import {useUserId} from "./hooks/use-user-id";
 import {useSetUser} from "./hooks/user-set-user";
 import {useUploadImage} from "./hooks/use-upload-image";
-import {MOCK_CARDS_CREATE_NEW_FIRESTORE_COLLECTION, USER} from "./constants";
-import {ProductCard} from "./components/product-card";
 import {ProductCardV2} from "./components/product-card-v2";
-import {Filters} from "./components/filters";
 import {useFirestoreSnapshot} from "./hooks/use-firestore-snapshot";
 import {Header} from "./components/Header";
 import {Prompt} from "./components/prompt";
@@ -22,7 +17,6 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [headerOpen, setHeaderOpen] = useState(false);
 
-  const {isDesktop} = useMedia();
   const router = useRouter();
   const userId = useUserId();
   const {cards} = useFirestoreSnapshot({
@@ -43,85 +37,82 @@ export default function Home() {
   };
 
   return (
-    <main className="relative px-4 py-4">
-      <Header
-        menuOpen={menuOpen}
-        setMenuOpen={() => setMenuOpen(!menuOpen)}
-        component={
-          <>
-            {headerOpen ? (
-              <div>
-                <p className="p-4 text-center text-sm  border-b border-gray-200">
-                  Use the input below to generate a new card based off your
-                  prompt. Upload an image for a starting point for Stable
-                  Diffusion.
-                </p>
-                <div className="flex flex-col gap-4">
-                  <Prompt
-                    prompt="something"
-                    setPrompt={console.log}
-                    handleSubmit={console.log}
-                    loading={false}
-                  />
-                  <div className="flex gap-4 justify-end px-4">
-                    <Button
-                      size="fit"
-                      label="Cancel"
-                      type="secondary"
-                      handleOnClick={() => setHeaderOpen(false)}
+    <>
+      <main className="relative px-4 py-4">
+        <Header
+          menuOpen={menuOpen}
+          setMenuOpen={() => setMenuOpen(!menuOpen)}
+          component={
+            <>
+              {headerOpen ? (
+                <div>
+                  <p className="p-4 text-center text-sm  border-b border-gray-200">
+                    Use the input below to generate a new card based off your
+                    prompt. Upload an image for a starting point for Stable
+                    Diffusion.
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    <Prompt
+                      prompt="something"
+                      setPrompt={console.log}
+                      handleSubmit={console.log}
+                      loading={false}
                     />
-                    <Button
-                      size="full"
-                      label="Generate"
-                      type="primary"
-                      handleOnClick={console.log}
-                    />
+                    <div className="flex gap-4 justify-end px-4">
+                      <Button
+                        size="fit"
+                        label="Cancel"
+                        type="secondary"
+                        handleOnClick={() => setHeaderOpen(false)}
+                      />
+                      <Button
+                        size="full"
+                        label="Generate"
+                        type="primary"
+                        handleOnClick={console.log}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <div className="p-4">
-                {/* <Filters /> */}
-                <Button
-                  label="Create Card"
-                  handleOnClick={() => router.push("my-cards")}
-                  disabled={false}
-                  type="primary"
-                  size="full"
-                  icon={
-                    <Image src="/wand.svg" width={20} height={20} alt="logo" />
-                  }
-                />
-              </div>
-            )}
-          </>
-        }
-      />
-      <div className="flex flex-col sm:flex-row gap-8 py-8">
-        {cards.map((card) => (
-          <ProductCardV2
-            key={card.id}
-            id={card.id}
-            image={card?.images?.[0]}
-            prompt={card.prompt}
-            title={card.title}
-            price={5}
-            hasBookmarked={card.saved}
-          />
-        ))}
-      </div>
-      {/* {!isDesktop && (
-        <div className="fixed bottom-4 right-0 left-0 px-16">
-          <Button
-            label="Create Card"
-            handleOnClick={() => router.push("my-cards")}
-            disabled={false}
-            type="primary"
-            size="full"
-          />
+              ) : (
+                <div className="p-4">
+                  {/* <Filters /> */}
+                  <Button
+                    label="Create Card"
+                    handleOnClick={() => router.push("my-cards")}
+                    disabled={false}
+                    type="primary"
+                    size="full"
+                    icon={
+                      <Image
+                        src="/wand.svg"
+                        width={20}
+                        height={20}
+                        alt="logo"
+                      />
+                    }
+                  />
+                </div>
+              )}
+            </>
+          }
+        />
+
+        <div className="flex flex-col sm:flex-row gap-8 py-8">
+          {cards.map((card) => (
+            <ProductCardV2
+              key={card.id}
+              id={card.id}
+              image={card?.images?.[0]}
+              prompt={card.prompt}
+              title={card.title}
+              price={5}
+              hasBookmarked={card.saved}
+            />
+          ))}
         </div>
-      )} */}
-    </main>
+      </main>
+    </>
   );
 }
 

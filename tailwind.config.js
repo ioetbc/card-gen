@@ -22,6 +22,7 @@ module.exports = {
         custom: "2px 2px 4px rgba(0, 0, 0, 0.25)",
         customOld: "5px 5px 24px rgba(0, 0, 0, 0.50)",
         card: "4px 4px 0px rgba(0, 0, 0, 0.15)",
+        button: "2px 2px 2px rgba(0, 0, 0, 0.15)",
       },
       colors: {
         primary: {
