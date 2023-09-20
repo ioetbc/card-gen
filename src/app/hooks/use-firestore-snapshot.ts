@@ -1,4 +1,4 @@
-import {query, collection, onSnapshot} from "firebase/firestore";
+import {query, collection, onSnapshot, orderBy} from "firebase/firestore";
 import {useEffect, useState} from "react";
 import {db} from "../firestore";
 import {TCard} from "../types";
@@ -15,7 +15,7 @@ export const useFirestoreSnapshot = ({userId}: {userId: string}) => {
     }
 
     const cardsCollectionRef = collection(db, "user", userId, "cards");
-    const cardsQuery = query(cardsCollectionRef);
+    const cardsQuery = query(cardsCollectionRef, orderBy("createdAt", "desc"));
 
     const unsubscribe = onSnapshot(cardsQuery, (querySnapshot) => {
       const cardsArray: TCard[] = [];

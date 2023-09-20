@@ -52,7 +52,7 @@ export const Navigation = ({
       title: "Prompt",
       children: (
         <TextArea
-          placeholder="A photograph of a man wearing glasses, cubism, by Vincent van Gogh, detailed, colorful, HD, low key"
+          placeholder="A photograph of a man wearing glasses, by Vincent van Gogh, detailed, colorful, HD, low key"
           handleChange={handlePromptChange}
         />
       ),

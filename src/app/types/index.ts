@@ -1,10 +1,10 @@
-import {ChatCompletionMessage} from "openai/resources/chat/index.mjs";
 import {ReactNode} from "react";
 
 export type TArtisticStyle =
   | "3d"
   | "art-deco"
   | "art-nouveau"
+  | "claude-monet"
   | "charcoal"
   | "comic"
   | "cubisim"
@@ -12,7 +12,16 @@ export type TArtisticStyle =
   | "photograph"
   | "stone-sculpture"
   | "van-gogh"
-  | "pop-art";
+  | "pop-art"
+  | "picasso"
+  | "kandinsky"
+  | "munch"
+  | "hokusai";
+
+export type ArtisticOptions = {
+  label: string;
+  value: TArtisticStyle;
+};
 
 export type NavigatonItems = {
   title: string;
@@ -45,3 +54,39 @@ export type TUser = {
   name: string;
   avatar: string;
 };
+
+export type TStableDiffusionMeta = {
+  H: number;
+  W: number;
+  file_prefix: string;
+  guidance_scale: number;
+  init_image: string;
+  n_samples: number;
+  negative_prompt: string;
+  outdir: string;
+  prompt: string;
+  safetychecker: string;
+  seed: number;
+  steps: number;
+  strength: number;
+};
+
+export type TStableDiffusionBody = {
+  status: string;
+  webhook_type: string;
+  track_id: string;
+  id: number;
+  meta: TStableDiffusionMeta;
+  output: string[];
+};
+
+export enum ECardSize {
+  PORTRAIT = "portrait",
+  LANDSCAPE = "landscape",
+  SQUARE = "square",
+}
+
+export type TCardSize =
+  | ECardSize.LANDSCAPE
+  | ECardSize.PORTRAIT
+  | ECardSize.SQUARE;

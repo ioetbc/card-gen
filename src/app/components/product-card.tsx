@@ -1,51 +1,166 @@
+import React, {ReactNode, useRef, useState} from "react";
+import {doc, updateDoc} from "firebase/firestore";
+import {db} from "../firestore";
+
 import Image from "next/image";
-import React, {useState} from "react";
-import {Tag} from "./tag";
-import {User} from "./user";
+import {motion, useAnimation} from "framer-motion";
+
 import {TUser} from "../types";
+import {useUserId} from "../hooks/use-user-id";
+import {Toast} from "./toast";
+import {Tabs} from "./tabs";
 
 type ProductCardProps = {
+  id: string;
+  image: string;
   title: string;
+  price: number;
+  user?: TUser;
   prompt: string;
-  url?: string;
-  user: TUser;
+  hasBookmarked: boolean;
+  cta?: ReactNode;
 };
 
-export const ProductCard = ({url, prompt, user, title}: ProductCardProps) => {
+const wiggle = {
+  start: {
+    rotate: 0,
+  },
+  end: {
+    rotate: 10,
+    transition: {
+      yoyo: 5, // yoyo means it will go back and forth 5 times.
+      duration: 0.3,
+      ease: "easeInOut",
+    },
+  },
+};
+
+function oneWeekAway() {
+  const now = new Date();
+  const inOneWeek = now.setDate(now.getDate() + 7);
+  return new Date(inOneWeek);
+}
+
+export const ProductCard = ({
+  id,
+  image,
+  title,
+  price,
+  prompt,
+  hasBookmarked,
+  cta,
+}: ProductCardProps) => {
   const [readMore, setReadMore] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const [bookmarked, setBookmarked] = useState(hasBookmarked);
+  const controls = useAnimation();
+  const userId = useUserId();
+
+  const eventDateRef = useRef(new Date());
+  const timerRef = useRef(0);
+
+  const wiggleAnimation = {
+    rotate: [-5, 5, -5, 5, -5, 0],
+    transition: {duration: 0.4, ease: "easeInOut"},
+  };
+
+  const handleBookmarkClick = async () => {
+    setBookmarked(!bookmarked);
+    controls.start(wiggleAnimation);
+
+    const cardRef = doc(db, "user", userId, "cards", id);
+
+    try {
+      await updateDoc(cardRef, {
+        saved: !hasBookmarked,
+      });
+
+      setOpen(false);
+      window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => {
+        eventDateRef.current = oneWeekAway();
+        setOpen(true);
+      }, 100);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <div className="shadow-card">
-      <div
-        className="relative w-full aspect-square bg-center bg-no-repeat bg-cover"
-        // style={{backgroundImage: "url(/envelope.webp)"}}
-      >
-        <Image src={url!} fill={true} alt="thing" />
-        {/* <div className="absolute right-0 left-0 bottom-0 top-0 m-auto w-full h-full shadow-custom bg-white flex items-center justify-center">
-          <div
-            className="w-40 h-40 bg-center bg-no-repeat bg-cover"
-            style={{backgroundImage: `url(${url})`}}
-          ></div>
+    <>
+      <div className="shadow-card rounded-xl">
+        <div className="relative w-full aspect-square">
+          {image && (
+            <Image
+              // src="/placeholder.jpg"
+              src={image}
+              fill={true}
+              alt="thing"
+              className="rounded-t-xl "
+            />
+          )}
         </div>
-      */}
-      </div>
-      <div className="p-4 flex items-center pr-4 bg-white">
-        <h3 className="text-xl">{title}</h3>
-      </div>
-      <div className="border-t border-b border-black px-4 flex items-center bg-white">
-        <div className="grid grid-cols-4 gap-4">
-          <div className="flex items-center col-span-2 border-black border-r pr-4">
-            <Tag label="130 sold" />
+
+        <div className="border border-gray-400 rounded-b-xl bg-white">
+          {/* <div className="border-b border-gray-200 px-4 flex items-center bg-white ">
+          <Tabs
+            tabs={[
+              {
+                label: "Front",
+                content: (
+
+              },
+            ]}
+          />
+        </div> */}
+          <div className="border-b border-gray-200 px-4 flex items-center bg-white ">
+            <div className="grid grid-cols-12 gap-4">
+              <div className="flex items-center col-span-3 border-gray-200 border-r pr-4 py-4">
+                <Image src="/price.png" width={100} height={100} alt="price" />
+              </div>
+              <div className="col-span-7 py-4 flex justify-between items-center">
+                <h3 className="text-lg">{title}</h3>
+              </div>
+              <div className="col-span-2 py-4 flex justify-end items-center">
+                <motion.div animate={controls}>
+                  <Image
+                    src={bookmarked ? "/bookmark-filled.svg" : "/bookmark.svg"}
+                    width={24}
+                    height={24}
+                    alt="price"
+                    onClick={handleBookmarkClick}
+                  />
+                </motion.div>
+              </div>
+            </div>
           </div>
-          <User name={user.name} avatar={user.avatar} />
+          <div className="px-4 py-4 flex flex-col gap-2">
+            <p className={`${!readMore ? "line-clamp-3" : ""} text-sm`}>
+              {prompt}
+            </p>
+            <p
+              className="underline text-xs text-gray-400"
+              onClick={() => setReadMore(!readMore)}
+            >
+              {readMore ? "Show less" : "Show more"}
+            </p>
+          </div>
+          <div className="px-4 py-4 flex flex-col gap-2 border-t border-gray-200">
+            {cta && cta}
+          </div>
         </div>
+        <Toast
+          open={open}
+          setOpen={setOpen}
+          description={`Card ${
+            hasBookmarked ? "added to" : "removed from"
+          } your bookmarks.`}
+        />
       </div>
-      <div className=" px-4 py-4 flex flex-col gap-2 bg-white">
-        <p className={`${!readMore ? "line-clamp-3" : ""} text-sm`}>{prompt}</p>
-        <p className="underline text-xs" onClick={() => setReadMore(!readMore)}>
-          {readMore ? "Show less" : "Show more"}
-        </p>
-      </div>
-    </div>
+    </>
   );
 };
+
+// TODO = bookmark animation shake when removed do something else when added
+// TODO = add a success / failure toast when bookmark added / removed

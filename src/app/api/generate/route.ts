@@ -1,9 +1,15 @@
+import {db} from "../firebase";
 import {
   NEGATIVE_PROMPT,
   STABLE_DIFFUSION_IMAGE_2_IMAGE_URL,
   STABLE_DIFFUSION_TEXT_2_IMAGE_URL,
 } from "@/app/constants";
-import {TArtisticStyle} from "@/app/types";
+import {ECardSize, TArtisticStyle, TCardSize} from "@/app/types";
+import set from "lodash/set";
+import {generateCardTitle} from "../utils/gpt/generate-card-title";
+import {getCardRef} from "../utils/db/get-card-ref";
+import {mapSnakeToCamel} from "../utils/db/map-snake-to-camel";
+import {setCard} from "../utils/db/set-card";
 
 type MuddlePromptTogetherProps = {
   prompt: string;
@@ -13,7 +19,7 @@ type MuddlePromptTogetherProps = {
 const mapArtisticStylc = (artisticStyle: TArtisticStyle) => {
   switch (artisticStyle) {
     case "3d":
-      return "photograph";
+      return "3d";
     case "art-deco":
       return "Art deco";
     case "art-nouveau":
@@ -41,19 +47,34 @@ const muddlePromptTogether = ({
   prompt,
   artisticStyle,
 }: MuddlePromptTogetherProps) => {
-  console.log("prompt", prompt);
-  console.log("artisticStyle", artisticStyle);
-
-  const thing = `${prompt}, ${mapArtisticStylc(
+  return `${prompt}, in the artistic style of ${mapArtisticStylc(
     artisticStyle
-  )}, colorful, HD, low key`;
+  )}`;
+};
 
-  console.log("thing", thing);
-  return thing;
+const widthAndHeight = (size: TCardSize) => {
+  switch (size) {
+    case ECardSize.LANDSCAPE:
+      return {
+        width: "512",
+        height: "512",
+      };
+    case ECardSize.PORTRAIT:
+      return {
+        width: "512",
+        height: "512",
+      };
+    case ECardSize.SQUARE:
+      return {
+        width: "512",
+        height: "512",
+      };
+  }
 };
 
 export async function POST(request: Request) {
-  const {userId, initialImage, prompt, artisticStyle} = await request.json();
+  const {userId, initialImage, prompt, artisticStyle, size} =
+    await request.json();
 
   console.log("initialImage", initialImage);
 
@@ -68,12 +89,11 @@ export async function POST(request: Request) {
   const body = {
     key: process.env.STABLE_DIFFUSION_API_KEY,
     prompt: muddlePromptTogether({prompt, artisticStyle}),
+    ...widthAndHeight(size),
     negative_prompt: NEGATIVE_PROMPT,
     ...(initialImage && {init_image: initialImage}),
-    strength: 0.6,
-    width: "512",
-    height: "512",
-    samples: "1",
+    strength: 0.8,
+    samples: "4",
     webhook: "https://3f14-188-28-106-173.ngrok-free.app/api/webhook-thing",
     track_id: userId,
   };
@@ -88,7 +108,33 @@ export async function POST(request: Request) {
     const data = await response.json();
     console.log("wtf data", data);
 
-    return new Response();
+    if (data.status === "success") {
+      try {
+        console.log("setting data", data);
+        await setCard({data, userId});
+
+        console.log(`New card for user ${userId} added. via webhook`);
+      } catch (error) {
+        console.error("Error updating card for user:", error);
+      }
+
+      return new Response(JSON.stringify(data), {
+        headers: {"Content-Type": "application/json"},
+      });
+    }
+
+    if (data.status === "error") {
+      throw new Error("Error generating card");
+    }
+
+    if (data.status === "processing") {
+      // OWWW I think add to the response if the toast should show on the front end. Can also add the title etc
+      // And in webhook thing also return the toast status
+    }
+
+    return new Response(JSON.stringify(data), {
+      headers: {"Content-Type": "application/json"},
+    });
   } catch (cause) {
     console.log("somethign fucked up cause", cause);
     return new Response("something went wrong", {status: 500});

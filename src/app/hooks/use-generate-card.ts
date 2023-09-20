@@ -1,11 +1,12 @@
 import {useMutation} from "@tanstack/react-query";
-import {TArtisticStyle} from "../types";
+import {TArtisticStyle, TCardSize} from "../types";
 
 type UseGenerateCardProps = {
   userId: string;
   prompt: string;
   artisticStyle: TArtisticStyle | null;
   initialImage?: string;
+  size: TCardSize;
 };
 
 export const useGenerateCard = () => {
@@ -15,6 +16,7 @@ export const useGenerateCard = () => {
       initialImage,
       prompt,
       artisticStyle,
+      size,
     }: UseGenerateCardProps) => {
       const response = await fetch("/api/generate", {
         method: "POST",
@@ -23,6 +25,7 @@ export const useGenerateCard = () => {
           initialImage,
           prompt,
           artisticStyle,
+          size,
         }),
         headers: {
           "Content-Type": "application/json",

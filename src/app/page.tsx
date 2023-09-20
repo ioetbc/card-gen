@@ -12,6 +12,10 @@ import {useFirestoreSnapshot} from "./hooks/use-firestore-snapshot";
 import {Header} from "./components/Header";
 import {Prompt} from "./components/prompt";
 import Image from "next/image";
+import {ScrollY} from "./components/scroll-y";
+import {Section} from "./components/section";
+import {Filters} from "./components/filters";
+import {Tray} from "./components/tray";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,19 +26,6 @@ export default function Home() {
   const {cards} = useFirestoreSnapshot({
     userId,
   });
-
-  const setUser = useSetUser();
-  const {upload, downloadURL} = useUploadImage();
-
-  const handleFile = async (file: File) => {
-    await upload({file, userId});
-    if (!downloadURL) return;
-
-    await setUser.mutateAsync({
-      userId,
-      initialImage: downloadURL,
-    });
-  };
 
   return (
     <>
@@ -57,6 +48,7 @@ export default function Home() {
                       setPrompt={console.log}
                       handleSubmit={console.log}
                       loading={false}
+                      handleFile={console.log}
                     />
                     <div className="flex gap-4 justify-end px-4">
                       <Button
@@ -98,19 +90,26 @@ export default function Home() {
           }
         />
 
-        <div className="flex flex-col sm:flex-row gap-8 py-8">
-          {cards.map((card) => (
-            <ProductCardV2
-              key={card.id}
-              id={card.id}
-              image={card?.images?.[0]}
-              prompt={card.prompt}
-              title={card.title}
-              price={5}
-              hasBookmarked={card.saved}
-            />
-          ))}
-        </div>
+        <Section
+          title="Gallery"
+          pre="Some card designs created using rubberducker."
+          component={<Filters />}
+        >
+          <ScrollY>
+            {cards.map((card) => (
+              <ProductCardV2
+                key={card.id}
+                id={card.id}
+                image={card?.images?.[0]}
+                prompt={card.prompt}
+                title={card.title}
+                hasBookmarked={card.saved}
+              />
+            ))}
+          </ScrollY>
+        </Section>
+
+        <Section content={<Tray />}></Section>
       </main>
     </>
   );

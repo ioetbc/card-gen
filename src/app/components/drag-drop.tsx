@@ -20,17 +20,16 @@ export const DragDrop: React.FC<FileDropzoneProps> = ({onFile, url}) => {
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col w-full">
       <div
         {...getRootProps()}
-        className="bg-white border-2 border-gray-200 border-dashed rounded-sm p-5 text-center cursor-pointer hover:bg-gray-50 transition duration-300 ease-in-out min-h-[150px] flex justify-center items-center"
+        className="bg-white border-r border-l border-t border-b rounded-b-md border-black p-4 text-center cursor-pointer hover:bg-gray-50 transition duration-300 ease-in-out flex justify-center items-center"
       >
         <input {...getInputProps()} />
-        {isDragActive ? (
-          <p>Upload file</p>
-        ) : (
-          <p>Drag n drop an image or click to select</p>
-        )}
+        <div className="flex gap-4">
+          <Image src="/upload.svg" width={20} height={20} alt="upload file" />
+          <p className="text-sm">Upload file</p>
+        </div>
       </div>
       <div>
         {url && (

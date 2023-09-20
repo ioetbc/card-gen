@@ -1,41 +1,68 @@
 "use client";
-
 import React, {useState} from "react";
-import {Input} from "../components/inputs/input";
 import {Empty} from "../components/empty";
-import {USER} from "../constants";
 import {useGenerateCard} from "../hooks/use-generate-card";
 import {useUserId} from "../hooks/use-user-id";
-import {ProductCardV2} from "../components/product-card-v2";
+import {ProductCard} from "../components/product-card";
 import {useFirestoreSnapshot} from "../hooks/use-firestore-snapshot";
-import {useToggleOnScroll} from "../hooks/use-toggle-scroll";
-import {Card} from "../components/card";
 import {Prompt} from "../components/prompt";
 import {Header} from "../components/Header";
 import {Button} from "../components/buttons/primary-button";
 import Image from "next/image";
+import {ECardSize, TArtisticStyle, TCardSize} from "../types";
+import {useUploadImage} from "../hooks/use-upload-image";
+import {useSetUser} from "../hooks/user-set-user";
+import {Toast} from "../components/toast";
 
 export default function MyCards() {
   const [loading, setLoading] = useState(false);
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
   const [prompt, setPrompt] = useState("");
+  const [size, setSize] = useState<TCardSize>(ECardSize.SQUARE);
+  const [artisticStyle, setArtisticStyle] = useState<TArtisticStyle>("cubisim");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [headerOpen, setHeaderOpen] = useState(false);
+  const [headerOpen, setHeaderOpen] = useState(true);
 
-  const isInputVisible = useToggleOnScroll();
   const generateCard = useGenerateCard();
   const userId = useUserId();
   const {cards} = useFirestoreSnapshot({
     userId,
   });
+  const {upload, downloadURL} = useUploadImage();
+  const setUser = useSetUser();
+
+  const handleFile = async (file: File) => {
+    await upload({file, userId});
+    if (!downloadURL) return;
+
+    await setUser.mutateAsync({
+      userId,
+      initialImage: downloadURL,
+    });
+  };
 
   const handleGenerateCard = async () => {
     setLoading(true);
 
-    await generateCard.mutateAsync({
-      userId,
-      prompt,
-      artisticStyle: "photograph",
-    });
+    console.log("handle generate card called", prompt);
+    await generateCard
+      .mutateAsync({
+        userId,
+        prompt,
+        artisticStyle,
+        size,
+      })
+      .then((data) => {
+        console.log("data returned if processing then dont show toast");
+        setToastMessage("Card successfully generated");
+        setToastOpen(true);
+      })
+      .catch((error) => {
+        setToastMessage("Error generating card");
+        // Also wanna change the toast color if an error
+        setToastOpen(false);
+      });
   };
 
   console.log("cards", cards);
@@ -57,9 +84,14 @@ export default function MyCards() {
                 <div className="flex flex-col gap-4">
                   <Prompt
                     prompt="something"
-                    setPrompt={console.log}
+                    setPrompt={setPrompt}
+                    setArtisticStyle={setArtisticStyle}
+                    artisticStyle={artisticStyle}
                     handleSubmit={console.log}
                     loading={false}
+                    size={size}
+                    setSize={setSize}
+                    handleFile={handleFile}
                   />
                   <div className="flex gap-4 justify-end px-4 pb-4">
                     {/* <Button
@@ -70,9 +102,9 @@ export default function MyCards() {
                     /> */}
                     <Button
                       size="fit"
-                      label="Generate"
+                      label="Generatse"
                       type="primary"
-                      handleOnClick={console.log}
+                      handleOnClick={handleGenerateCard}
                     />
                   </div>
                 </div>
@@ -95,33 +127,40 @@ export default function MyCards() {
       />
       <div className="relative py-14 flex flex-col gap-8">
         {!cards.length ? (
-          <Empty user={USER} />
+          <Empty />
         ) : (
           <div className="flex flex-col gap-16">
-            {cards.map((card) => (
-              <ProductCardV2
-                key={card.id}
-                id={card.id}
-                image={card?.images?.[0]}
-                prompt={card.prompt}
-                title={card.title}
-                price={5}
-                hasBookmarked={card.saved}
-                cta={
-                  <div className="flex justify-end">
-                    <Button
-                      size="fit"
-                      label="Add message"
-                      type="primary"
-                      handleOnClick={console.log}
-                    />
-                  </div>
-                }
-              />
-            ))}
+            {cards.map((card) =>
+              card.images.map((image) => (
+                <ProductCard
+                  key={image}
+                  id={card.id}
+                  image={image}
+                  prompt={card.prompt}
+                  title={card.title}
+                  price={5}
+                  hasBookmarked={card.saved}
+                  cta={
+                    <div className="flex justify-end">
+                      <Button
+                        size="fit"
+                        label="Add message"
+                        type="primary"
+                        handleOnClick={console.log}
+                      />
+                    </div>
+                  }
+                />
+              ))
+            )}
           </div>
         )}
       </div>
+      <Toast
+        open={toastOpen}
+        setOpen={setToastOpen}
+        description={toastMessage}
+      />
     </main>
   );
 }

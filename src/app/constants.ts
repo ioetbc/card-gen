@@ -1,17 +1,19 @@
+import {ArtisticOptions, TArtisticStyle} from "./types";
+
 export const STABLE_DIFFUSION_IMAGE_2_IMAGE_URL =
   "https://stablediffusionapi.com/api/v3/img2img";
 
 export const STABLE_DIFFUSION_TEXT_2_IMAGE_URL =
   "https://stablediffusionapi.com/api/v3/text2img";
 
-export const ARTISTIC_STYLES = [
+export const ARTISTIC_STYLES: ArtisticOptions[] = [
   {
     label: "Claude Monet",
-    value: "claude_monet",
+    value: "claude-monet",
   },
   {
     label: "Van Gogh",
-    value: "van_gogh",
+    value: "van-gogh",
   },
   {
     label: "Picasso",
@@ -28,6 +30,21 @@ export const ARTISTIC_STYLES = [
   {
     label: "Hokusai",
     value: "hokusai",
+  },
+];
+
+export const CARD_SIZES = [
+  {
+    label: "Square",
+    value: "square",
+  },
+  {
+    label: "Landscape",
+    value: "landscape",
+  },
+  {
+    label: "Portrait",
+    value: "portrait",
   },
 ];
 
@@ -83,24 +100,34 @@ export const MOCK_CARDS_CREATE_NEW_FIRESTORE_COLLECTION = [
 
 export const FILTER_TYPES = [
   {
+    label: "All",
+    value: "all",
+    active: true,
+  },
+  {
     label: "Birthday",
     value: "birthday",
+    active: false,
   },
   {
     label: "Christmas",
     value: "christmas",
+    active: false,
   },
   {
     label: "Wedding",
     value: "wedding",
+    active: false,
   },
   {
     label: "Baby Shower",
     value: "baby_shower",
+    active: false,
   },
   {
     label: "Anniversary",
     value: "anniversary",
+    active: false,
   },
 ];
 

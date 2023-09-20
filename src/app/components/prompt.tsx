@@ -1,45 +1,64 @@
 import React from "react";
 import {Input} from "./inputs/input";
-import Image from "next/image";
+import {Select} from "./inputs/select";
+import {TArtisticStyle} from "../types";
+import {DragDrop} from "./drag-drop";
+import {ARTISTIC_STYLES, CARD_SIZES} from "../constants";
 
 type PromptProps = {
   prompt: string;
   setPrompt: (value: string) => void;
+  setArtisticStyle: (value: TArtisticStyle) => void;
+  size: string;
+  setSize: (value: string) => void;
+  artisticStyle: TArtisticStyle;
   handleSubmit: () => void;
   loading: boolean;
+  handleFile: (file: File) => void;
 };
 
 export const Prompt = ({
   prompt,
   setPrompt,
+  setArtisticStyle,
+  size,
+  setSize,
+  artisticStyle,
   handleSubmit,
   loading,
+  handleFile,
 }: PromptProps) => {
   return (
     <div className="flex flex-col">
       <div className="px-4 py-6">
         <Input
-          handleChange={(value) => setPrompt(value)}
+          handleChange={setPrompt}
           placeholder="A happy dog sitting in front"
           handleSubmit={handleSubmit}
           icon={loading ? "loading" : "search"}
         />
       </div>
-      <div className="border-t border-b border-gray-200 px-4 flex items-center">
-        <div className="grid grid-cols-4 gap-4">
-          <div className="flex items-center gap-4 col-span-2 border-r border-gray-200 pr-4 py-6">
-            <Image
-              src="/artistic-icon.svg"
-              width={20}
-              height={20}
-              alt="artistic style"
+      <div className="flex items-center px-4">
+        <div className="w-full">
+          <div className="flex items-center">
+            <Select
+              state={artisticStyle}
+              setState={setArtisticStyle}
+              borderType="left"
+              options={ARTISTIC_STYLES}
+              icon="artistic-icon"
+              placeholder="Art style"
             />
-            <p className="text-sm">Artistic style</p>
+            <Select
+              state={size}
+              setState={setSize}
+              borderType="right"
+              options={CARD_SIZES}
+              icon="ruler"
+              placeholder="Square"
+            />
           </div>
-          <div className="flex items-center gap-4 col-span-2 pr-4 py-6">
-            <Image src="/upload.svg" width={20} height={20} alt="upload file" />
-            <p className="text-sm">Upload image</p>
-          </div>
+          <DragDrop onFile={handleFile} url={""} />
         </div>
       </div>
     </div>
