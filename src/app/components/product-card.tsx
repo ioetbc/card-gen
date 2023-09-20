@@ -9,6 +9,7 @@ import {TUser} from "../types";
 import {useUserId} from "../hooks/use-user-id";
 import {Toast} from "./toast";
 import {Tabs} from "./tabs";
+import {CardMessage} from "./card-message";
 
 type ProductCardProps = {
   id: string;
@@ -90,7 +91,7 @@ export const ProductCard = ({
   return (
     <>
       <div className="shadow-card rounded-xl">
-        <div className="relative w-full aspect-square">
+        {/* <div className="relative w-full aspect-square">
           {image && (
             <Image
               // src="/placeholder.jpg"
@@ -100,20 +101,27 @@ export const ProductCard = ({
               className="rounded-t-xl "
             />
           )}
-        </div>
-
-        <div className="border border-gray-400 rounded-b-xl bg-white">
-          {/* <div className="border-b border-gray-200 px-4 flex items-center bg-white ">
-          <Tabs
-            tabs={[
-              {
-                label: "Front",
-                content: (
-
-              },
-            ]}
-          />
         </div> */}
+
+        <div className="border rounded-xl border-gray-400 rounded-b-xl bg-white">
+          <Tabs
+            tab1Content={
+              <div className="relative w-full aspect-square">
+                <Image
+                  // src="/placeholder.jpg"
+                  src={image}
+                  fill={true}
+                  alt="thing"
+                  className="rounded-t-xl "
+                />
+              </div>
+            }
+            tab2Content={
+              <div className="relative w-full aspect-square p-4">
+                <CardMessage />
+              </div>
+            }
+          />
           <div className="border-b border-gray-200 px-4 flex items-center bg-white ">
             <div className="grid grid-cols-12 gap-4">
               <div className="flex items-center col-span-3 border-gray-200 border-r pr-4 py-4">

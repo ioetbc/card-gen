@@ -8,6 +8,7 @@ import {motion, useAnimation} from "framer-motion";
 import {TUser} from "../types";
 import {useUserId} from "../hooks/use-user-id";
 import {Toast} from "./toast";
+import {Tabs} from "./tabs";
 
 type ProductCardProps = {
   id: string;
