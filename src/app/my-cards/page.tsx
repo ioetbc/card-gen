@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Empty} from "../components/empty";
 import {useGenerateCard} from "../hooks/use-generate-card";
 import {useUserId} from "../hooks/use-user-id";
@@ -8,29 +8,60 @@ import {useFirestoreSnapshot} from "../hooks/use-firestore-snapshot";
 import {Prompt} from "../components/prompt";
 import {Header} from "../components/Header";
 import {Button} from "../components/buttons/primary-button";
-import Image from "next/image";
-import {ECardSize, TArtisticStyle, TCardSize} from "../types";
+import {ECardSize, TArtisticStyle, TCardSize, TToast} from "../types";
 import {useUploadImage} from "../hooks/use-upload-image";
 import {useSetUser} from "../hooks/user-set-user";
 import {Toast} from "../components/toast";
 
+function generateUniqueRef(cardId: string, index: number) {
+  const encodedId = cardId
+    .split("")
+    .map((char) => char.charCodeAt(0))
+    .reduce((acc, code) => acc + code, 0);
+  return encodedId + index;
+}
+
 export default function MyCards() {
   const [loading, setLoading] = useState(false);
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
+  const [toast, setToast] = useState<TToast>({
+    open: false,
+    description: "",
+    fill: "pink",
+  });
+
   const [prompt, setPrompt] = useState("");
   const [size, setSize] = useState<TCardSize>(ECardSize.SQUARE);
   const [artisticStyle, setArtisticStyle] = useState<TArtisticStyle>("cubisim");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [headerOpen, setHeaderOpen] = useState(true);
-
+  const productCardRef = useRef<HTMLDivElement[]>([]);
+  const isInitialRender = useRef(true);
   const generateCard = useGenerateCard();
   const userId = useUserId();
+
   const {cards} = useFirestoreSnapshot({
     userId,
   });
   const {upload, downloadURL} = useUploadImage();
   const setUser = useSetUser();
+
+  useEffect(() => {
+    console.log("firestore document update", cards.length);
+
+    if (!cards.length) return;
+
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
+
+    setToast({
+      open: true,
+      description: "Card successfully generated",
+      fill: "pink",
+    });
+
+    setLoading(false);
+  }, [cards]);
 
   const handleFile = async (file: File) => {
     await upload({file, userId});
@@ -44,8 +75,11 @@ export default function MyCards() {
 
   const handleGenerateCard = async () => {
     setLoading(true);
-
-    console.log("handle generate card called", prompt);
+    setToast({
+      open: true,
+      description: "Bare with us 30 ish seconds",
+      fill: "pink",
+    });
     await generateCard
       .mutateAsync({
         userId,
@@ -53,75 +87,69 @@ export default function MyCards() {
         artisticStyle,
         size,
       })
-      .then((data) => {
-        console.log("data returned if processing then dont show toast");
-        setToastMessage("Card successfully generated");
-        setToastOpen(true);
-      })
       .catch((error) => {
-        setToastMessage("Error generating card");
-        // Also wanna change the toast color if an error
-        setToastOpen(false);
+        console.log("error calling handleGenerateCard", error);
+        setToast({
+          open: true,
+          description: "There was an error, please try again",
+          fill: "red",
+        });
+        setLoading(false);
       });
   };
 
+  const handleAddMessage = (card: number) => {
+    const ref = productCardRef?.current[card];
+    console.log("handle add message", ref);
+
+    ref?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    // setActiveTab("tab2");
+  };
+
   console.log("cards", cards);
+  console.log("prompt", prompt);
+  console.log("artisticStyle", artisticStyle);
 
   return (
-    <main className="relative px-4 py-4">
+    <main className="relative py-4">
       <Header
         menuOpen={menuOpen}
         setMenuOpen={() => setMenuOpen(!menuOpen)}
         component={
           <>
-            {headerOpen ? (
-              <div>
-                <p className="p-4 text-center text-sm  border-b border-gray-200">
-                  Use the input below to generate a new card based off your
-                  prompt. Upload an image for a starting point for Stable
-                  Diffusion.
-                </p>
-                <div className="flex flex-col gap-4">
-                  <Prompt
-                    prompt="something"
-                    setPrompt={setPrompt}
-                    setArtisticStyle={setArtisticStyle}
-                    artisticStyle={artisticStyle}
-                    handleSubmit={console.log}
-                    loading={false}
-                    size={size}
-                    setSize={setSize}
-                    handleFile={handleFile}
+            <div>
+              <p className="p-4 text-center text-sm  border-b border-gray-200">
+                Use the input below to generate a new card based off your
+                prompt. Upload an image for a starting point for Stable
+                Diffusion.
+              </p>
+              <div className="flex flex-col gap-4">
+                <Prompt
+                  prompt="something"
+                  setPrompt={setPrompt}
+                  setArtisticStyle={setArtisticStyle}
+                  artisticStyle={artisticStyle}
+                  handleSubmit={console.log}
+                  loading={false}
+                  size={size}
+                  setSize={setSize}
+                  handleFile={handleFile}
+                />
+                <div className="flex gap-4 justify-end px-4 pb-4">
+                  <Button
+                    size="full"
+                    label="Generate card"
+                    type="primary"
+                    handleOnClick={handleGenerateCard}
+                    loading={loading}
                   />
-                  <div className="flex gap-4 justify-end px-4 pb-4">
-                    {/* <Button
-                      size="fit"
-                      label="Cancel"
-                      type="secondary"
-                      handleOnClick={() => setHeaderOpen(false)}
-                    /> */}
-                    <Button
-                      size="fit"
-                      label="Generatse"
-                      type="primary"
-                      handleOnClick={handleGenerateCard}
-                    />
-                  </div>
                 </div>
               </div>
-            ) : (
-              <div className="p-4">
-                <Button
-                  size="full"
-                  type="primary"
-                  label="Create new card"
-                  handleOnClick={() => setHeaderOpen(!headerOpen)}
-                  icon={
-                    <Image src="/wand.svg" width={20} height={20} alt="logo" />
-                  }
-                />
-              </div>
-            )}
+            </div>
           </>
         }
       />
@@ -131,7 +159,7 @@ export default function MyCards() {
         ) : (
           <div className="flex flex-col gap-16">
             {cards.map((card) =>
-              card.images.map((image) => (
+              card.images.map((image, index) => (
                 <ProductCard
                   key={image}
                   id={card.id}
@@ -146,9 +174,15 @@ export default function MyCards() {
                         size="fit"
                         label="Add message"
                         type="primary"
-                        handleOnClick={console.log}
+                        handleOnClick={() =>
+                          handleAddMessage(generateUniqueRef(card.id, index))
+                        }
                       />
                     </div>
+                  }
+                  ref={(el) =>
+                    (productCardRef.current[generateUniqueRef(card.id, index)] =
+                      el)
                   }
                 />
               ))
@@ -156,11 +190,7 @@ export default function MyCards() {
           </div>
         )}
       </div>
-      <Toast
-        open={toastOpen}
-        setOpen={setToastOpen}
-        description={toastMessage}
-      />
+      <Toast setToast={setToast} toast={toast} />
     </main>
   );
 }

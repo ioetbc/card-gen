@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import trim from "lodash/trim";
 
 import {getPrompt} from "./get-prompt";
 
@@ -20,5 +21,13 @@ export const generateCardTitle = async ({prompt}: GenerateCardTitleProps) => {
   });
 
   console.log("gptResponse", gptResponse.choices);
-  return gptResponse.choices[0].message.content;
+
+  const text = gptResponse.choices[0].message.content;
+
+  if (text) {
+    const title = trim(text, '""');
+    return title;
+  }
+
+  return "Generic title";
 };

@@ -29,7 +29,7 @@ export default function Home() {
 
   return (
     <>
-      <main className="relative px-4 py-4">
+      <main className="relative py-4">
         <Header
           menuOpen={menuOpen}
           setMenuOpen={() => setMenuOpen(!menuOpen)}

@@ -15,19 +15,19 @@ export const useFirestoreSnapshot = ({userId}: {userId: string}) => {
     }
 
     const cardsCollectionRef = collection(db, "user", userId, "cards");
-    const cardsQuery = query(cardsCollectionRef, orderBy("createdAt", "desc"));
+    const cardsQuery = query(cardsCollectionRef, orderBy("createdAt", "asc"));
 
     const unsubscribe = onSnapshot(cardsQuery, (querySnapshot) => {
-      const cardsArray: TCard[] = [];
-      querySnapshot.forEach((doc) => {
-        cardsArray.push({
-          ...doc.data(),
-          id: doc.id,
-        } as TCard);
-      });
+      querySnapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          const newCard = {
+            ...change.doc.data(),
+            id: change.doc.id,
+          } as TCard;
 
-      console.log("cardsArray", cardsArray);
-      setCards(cardsArray);
+          setCards((prevCards) => [newCard, ...prevCards]);
+        }
+      });
     });
 
     return () => unsubscribe();

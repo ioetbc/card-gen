@@ -1,4 +1,4 @@
-import {ArtisticOptions, TArtisticStyle} from "./types";
+import {ArtisticOptions, FooterItem, TArtisticStyle} from "./types";
 
 export const STABLE_DIFFUSION_IMAGE_2_IMAGE_URL =
   "https://stablediffusionapi.com/api/v3/img2img";
@@ -139,3 +139,34 @@ export const USER = {
 
 export const NEGATIVE_PROMPT =
   "extra limbs, poorly drawn face, poorly drawn hands, disfigured, deformed, bad anatomy, distorted face, multiple faces, multiple chins";
+
+export const FOOTER_ITEMS: FooterItem[] = [
+  {
+    label: "Home",
+    url: "",
+  },
+  {
+    label: "My bookmarks",
+    url: "my-bookmarks",
+  },
+  {
+    label: "My cards",
+    url: "my-cards",
+  },
+  {
+    label: "Privacy policy",
+    url: "privacy-policy",
+  },
+  {
+    label: "Terms of service",
+    url: "terms-of-service",
+  },
+  {
+    label: "Contact us",
+    url: "contact-us",
+  },
+  {
+    label: "FAQs",
+    url: "faqs",
+  },
+];

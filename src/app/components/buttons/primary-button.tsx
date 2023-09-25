@@ -1,5 +1,6 @@
 import React from "react";
 import {motion} from "framer-motion";
+import Image from "next/image";
 
 type PrimaryButtonProps = {
   label: string;
@@ -54,7 +55,7 @@ export const Button = ({
             animate="spin"
             transition={{duration: 1, repeat: Infinity, ease: "linear"}}
           >
-            🔄
+            <Image src="/loading.svg" width={20} height={20} alt="logo" />
           </motion.div>
         ) : (
           <div className="flex gap-2">

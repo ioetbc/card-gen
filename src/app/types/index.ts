@@ -1,5 +1,23 @@
 import {ReactNode} from "react";
 
+export enum EArtisticStyle {
+  ThreeD = "3d",
+  ArtDeco = "art-deco",
+  ArtNouveau = "art-nouveau",
+  Charcoal = "charcoal",
+  Comic = "comic",
+  Cubisim = "cubisim",
+  JohnSargent = "john-sargent",
+  PopArt = "pop-art",
+  StoneSculpture = "stone-sculpture",
+  VanGogh = "van-gogh",
+  Picasso = "picasso",
+  Photograph = "photograph",
+  Kandinsky = "kandinsky",
+  Munch = "munch",
+  Hokusai = "hokusai",
+}
+
 export type TArtisticStyle =
   | "3d"
   | "art-deco"
@@ -90,3 +108,14 @@ export type TCardSize =
   | ECardSize.LANDSCAPE
   | ECardSize.PORTRAIT
   | ECardSize.SQUARE;
+
+export type FooterItem = {
+  label: string;
+  url: string;
+};
+
+export type TToast = {
+  open: boolean;
+  description: string;
+  fill: "pink" | "red";
+};

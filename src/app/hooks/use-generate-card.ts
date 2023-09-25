@@ -18,6 +18,7 @@ export const useGenerateCard = () => {
       artisticStyle,
       size,
     }: UseGenerateCardProps) => {
+      console.log("calling", userId);
       const response = await fetch("/api/generate", {
         method: "POST",
         body: JSON.stringify({

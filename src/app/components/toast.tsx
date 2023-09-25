@@ -1,18 +1,28 @@
 import * as React from "react";
 import * as RadixToast from "@radix-ui/react-toast";
 import "../toast.css";
+import {TToast} from "../types";
 
 type ToastProps = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  description: string;
+  setToast: ({open, description, fill}: TToast) => void;
+  toast: TToast;
 };
 
-export const Toast = ({open, setOpen, description}: ToastProps) => {
+export const Toast = ({setToast, toast}: ToastProps) => {
   return (
     <RadixToast.Provider swipeDirection="down">
-      <RadixToast.Root className="ToastRoot" open={open} onOpenChange={setOpen}>
-        <RadixToast.Description>{description}</RadixToast.Description>
+      <RadixToast.Root
+        className="ToastRoot"
+        open={toast.open}
+        onOpenChange={() =>
+          setToast({
+            open: !toast.open,
+            description: toast.description,
+            fill: toast.fill,
+          })
+        }
+      >
+        <RadixToast.Description>{toast.description}</RadixToast.Description>
       </RadixToast.Root>
       <RadixToast.Viewport className="ToastViewport" />
     </RadixToast.Provider>
