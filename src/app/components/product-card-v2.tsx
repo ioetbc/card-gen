@@ -141,8 +141,8 @@ export const ProductCardV2 = ({
         </div>
       </div>
       <Toast
-        open={open}
-        setOpen={setOpen}
+        setToast={setToast}
+        toast={toast}
         description={`Card ${
           hasBookmarked ? "added to" : "removed from"
         } your bookmarks.`}

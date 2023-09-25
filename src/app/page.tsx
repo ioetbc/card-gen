@@ -5,8 +5,6 @@ import {useRouter} from "next/navigation";
 
 import {Button} from "./components/buttons/primary-button";
 import {useUserId} from "./hooks/use-user-id";
-import {useSetUser} from "./hooks/user-set-user";
-import {useUploadImage} from "./hooks/use-upload-image";
 import {ProductCardV2} from "./components/product-card-v2";
 import {useFirestoreSnapshot} from "./hooks/use-firestore-snapshot";
 import {Header} from "./components/Header";

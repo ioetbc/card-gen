@@ -10,186 +10,167 @@ import {useUserId} from "../hooks/use-user-id";
 import {Toast} from "./toast";
 import {Tabs} from "./tabs";
 import {CardMessage} from "./card-message";
+import {Button} from "./buttons/primary-button";
 
 type ProductCardProps = {
   id: string;
   image: string;
   title: string;
   price: number;
-  user?: TUser;
   prompt: string;
   hasBookmarked: boolean;
-  cta?: ReactNode;
-  activeTab: string;
-  setActiveTab: (value: string) => void;
+  message: string;
+  setMessage: (value: string) => void;
 };
 
-const wiggle = {
-  start: {
-    rotate: 0,
-  },
-  end: {
-    rotate: 10,
-    transition: {
-      yoyo: 5, // yoyo means it will go back and forth 5 times.
-      duration: 0.3,
-      ease: "easeInOut",
-    },
-  },
-};
+export const ProductCard = ({
+  hasBookmarked,
+  image,
+  title,
+  prompt,
+  id,
+  message,
+  setMessage,
+}: ProductCardProps) => {
+  const [readMore, setReadMore] = useState(false);
+  const [activeTab, setActiveTab] = useState("tab1");
+  const [toast, setToast] = useState<TToast>({
+    open: false,
+    description: "",
+    fill: "pink",
+  });
 
-function oneWeekAway() {
-  const now = new Date();
-  const inOneWeek = now.setDate(now.getDate() + 7);
-  return new Date(inOneWeek);
-}
+  const [bookmarked, setBookmarked] = useState(hasBookmarked);
+  const controls = useAnimation();
+  const userId = useUserId();
+  const timerRef = useRef(0);
 
-export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
-  ({hasBookmarked, image, title, cta, prompt, id}, ref) => {
-    const [readMore, setReadMore] = useState(false);
-    const [activeTab, setActiveTab] = useState("tab1");
-    const [toast, setToast] = useState<TToast>({
-      open: false,
-      description: "",
-      fill: "pink",
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const wiggleAnimation = {
+    rotate: [-5, 5, -5, 5, -5, 0],
+    transition: {duration: 0.4, ease: "easeInOut"},
+  };
+
+  const handleAddMessage = () => {
+    if (!cardRef.current) return;
+
+    cardRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
     });
 
-    console.log("da id", id);
+    setActiveTab("tab2");
+  };
 
-    const [bookmarked, setBookmarked] = useState(hasBookmarked);
-    const controls = useAnimation();
-    const userId = useUserId();
+  const handleBookmarkClick = async () => {
+    setBookmarked(!bookmarked);
+    controls.start(wiggleAnimation);
 
-    const eventDateRef = useRef(new Date());
-    const timerRef = useRef(0);
+    const ref = doc(db, "user", userId, "cards", id);
 
-    const wiggleAnimation = {
-      rotate: [-5, 5, -5, 5, -5, 0],
-      transition: {duration: 0.4, ease: "easeInOut"},
-    };
+    try {
+      await updateDoc(ref, {
+        saved: !bookmarked,
+      });
 
-    const handleBookmarkClick = async () => {
-      setBookmarked(!bookmarked);
-      controls.start(wiggleAnimation);
+      setToast({
+        open: false,
+        description: !bookmarked
+          ? "Card added to bookmarks"
+          : "Card removed from bookmarks",
+        fill: "pink",
+      });
 
-      const cardRef = doc(db, "user", userId, "cards", id);
-
-      try {
-        await updateDoc(cardRef, {
-          saved: !bookmarked,
-        });
-
+      window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => {
         setToast({
-          open: false,
+          open: true,
           description: !bookmarked
             ? "Card added to bookmarks"
             : "Card removed from bookmarks",
           fill: "pink",
         });
+      }, 500);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-        window.clearTimeout(timerRef.current);
-        timerRef.current = window.setTimeout(() => {
-          eventDateRef.current = oneWeekAway();
-
-          setToast({
-            open: true,
-            description: !bookmarked
-              ? "Card added to bookmarks"
-              : "Card removed from bookmarks",
-            fill: "pink",
-          });
-        }, 100);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    return (
-      <div ref={ref}>
-        <div className="shadow-card rounded-xl">
-          {/* <div className="relative w-full aspect-square">
-          {image && (
-            <Image
-              // src="/placeholder.jpg"
-              src={image}
-              fill={true}
-              alt="thing"
-              className="rounded-t-xl "
-            />
-          )}
-        </div> */}
-
-          <div className="border rounded-xl border-gray-400 rounded-b-xl bg-white">
-            <Tabs
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              tab1Content={
-                <div className="relative w-full aspect-square">
+  return (
+    <div ref={cardRef}>
+      <div className="shadow-card rounded-xl">
+        <div className="border rounded-xl border-gray-400 rounded-b-xl bg-white">
+          <Tabs
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            tab1Content={
+              <div className="relative w-full aspect-square">
+                <Image
+                  // src="/placeholder.jpg"
+                  src={image}
+                  fill={true}
+                  alt="thing"
+                  className="rounded-t-xl "
+                />
+              </div>
+            }
+            tab2Content={
+              <div className="relative w-full aspect-square p-4">
+                <CardMessage
+                  activeTab={activeTab}
+                  setMessage={setMessage}
+                  message={message}
+                  id={id}
+                />
+              </div>
+            }
+          />
+          <div className="border-b border-gray-200 px-4 flex items-center bg-white ">
+            <div className="grid grid-cols-12 gap-4">
+              <div className="flex items-center col-span-3 border-gray-200 border-r pr-4 py-4">
+                <Image src="/price.png" width={100} height={100} alt="price" />
+              </div>
+              <div className="col-span-7 py-4 flex justify-between items-center">
+                <h3 className="text-lg">{title}</h3>
+              </div>
+              <div className="col-span-2 py-4 flex justify-end items-center">
+                <motion.div animate={controls}>
                   <Image
-                    // src="/placeholder.jpg"
-                    src={image}
-                    fill={true}
-                    alt="thing"
-                    className="rounded-t-xl "
-                  />
-                </div>
-              }
-              tab2Content={
-                <div className="relative w-full aspect-square p-4">
-                  <CardMessage activeTab={activeTab} />
-                </div>
-              }
-            />
-            <div className="border-b border-gray-200 px-4 flex items-center bg-white ">
-              <div className="grid grid-cols-12 gap-4">
-                <div className="flex items-center col-span-3 border-gray-200 border-r pr-4 py-4">
-                  <Image
-                    src="/price.png"
-                    width={100}
-                    height={100}
+                    src={bookmarked ? "/bookmark-filled.svg" : "/bookmark.svg"}
+                    width={24}
+                    height={24}
                     alt="price"
+                    onClick={handleBookmarkClick}
                   />
-                </div>
-                <div className="col-span-7 py-4 flex justify-between items-center">
-                  <h3 className="text-lg">{title}</h3>
-                </div>
-                <div className="col-span-2 py-4 flex justify-end items-center">
-                  <motion.div animate={controls}>
-                    <Image
-                      src={
-                        bookmarked ? "/bookmark-filled.svg" : "/bookmark.svg"
-                      }
-                      width={24}
-                      height={24}
-                      alt="price"
-                      onClick={handleBookmarkClick}
-                    />
-                  </motion.div>
-                </div>
+                </motion.div>
               </div>
             </div>
-            <div className="px-4 py-4 flex flex-col gap-2">
-              <p className={`${!readMore ? "line-clamp-3" : ""} text-sm`}>
-                {prompt}
-              </p>
-              <p
-                className="underline text-xs text-gray-400"
-                onClick={() => setReadMore(!readMore)}
-              >
-                {readMore ? "Show less" : "Show more"}
-              </p>
-            </div>
-            <div className="px-4 py-4 flex flex-col gap-2 border-t border-gray-200">
-              {cta && cta}
+          </div>
+          <div className="px-4 py-4 flex flex-col gap-2">
+            <p className={`${!readMore ? "line-clamp-3" : ""} text-sm`}>
+              {prompt}
+            </p>
+            <p
+              className="underline text-xs text-gray-400"
+              onClick={() => setReadMore(!readMore)}
+            >
+              {readMore ? "Show less" : "Show more"}
+            </p>
+          </div>
+          <div className="px-4 py-4 flex flex-col gap-2 border-t border-gray-200">
+            <div className="flex justify-end">
+              <Button
+                size="fit"
+                label="Add message"
+                type="primary"
+                handleOnClick={() => handleAddMessage()}
+              />
             </div>
           </div>
-          <Toast setToast={setToast} toast={toast} />
         </div>
+        <Toast setToast={setToast} toast={toast} />
       </div>
-    );
-  }
-);
-
-// TODO = bookmark animation shake when removed do something else when added
-// TODO = add a success / failure toast when bookmark added / removed
-ProductCard.displayName = "ProductCard";
+    </div>
+  );
+};

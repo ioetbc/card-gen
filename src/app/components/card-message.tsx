@@ -1,44 +1,51 @@
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
+import {useFirestoreUpdate} from "../hooks/use-update-card-message";
+import {useUserId} from "../hooks/use-user-id";
 
 type CardMessageProps = {
   activeTab: string;
+  message: string;
+  setMessage: (value: string) => void;
+  id: string;
 };
 
-export const CardMessage = ({activeTab}: CardMessageProps) => {
-  const [input1Value, setInput1Value] = useState("");
-  const [textareaValue, setTextareaValue] = useState("");
-  const [input3Value, setInput3Value] = useState("");
+export const CardMessage = ({
+  activeTab,
+  message,
+  setMessage,
+  id,
+}: CardMessageProps) => {
+  const {updateCardMessage, loading, error} = useFirestoreUpdate();
+  const userId = useUserId();
 
   const handleInputChange =
     <T extends HTMLInputElement | HTMLTextAreaElement>(
       setter: (value: string) => void
     ) =>
     (event: React.ChangeEvent<T>) => {
-      setter(event.target.value);
+      if (event.target.value.length === 0) return;
+      setter(event.target.value.trim());
     };
+
+  const handleBlurMessage = () => {
+    // update firstore record
+    updateCardMessage({
+      userId,
+      id,
+      message,
+    });
+  };
 
   return (
     <div className="flex flex-col justify-between h-full">
-      {/* <input
-        placeholder="yo,"
-        className="border border-blue-500 p-2 w-full"
-        value={input1Value}
-        onChange={handleInputChange(setInput1Value)}
-      /> */}
       <textarea
-        placeholder="Happy\n\nbirthday you blah blah blah blah blah blah"
+        placeholder="Happy birthday you blah blah blah blah blah blah"
         className="border border-blue-500 p-2 w-full h-full"
-        value={textareaValue}
-        onChange={handleInputChange(setTextareaValue)}
+        value={message}
+        onChange={handleInputChange(setMessage)}
         maxLength={125}
-        // onFocus={() => activeTab === "tab2"}
+        onBlur={handleBlurMessage}
       ></textarea>
-      {/* <input
-        placeholder="cya,"
-        className="border border-blue-500 p-2 w-full"
-        value={input3Value}
-        onChange={handleInputChange(setInput3Value)}
-      /> */}
     </div>
   );
 };

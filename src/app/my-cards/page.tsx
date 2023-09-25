@@ -10,7 +10,7 @@ import {Header} from "../components/Header";
 import {Button} from "../components/buttons/primary-button";
 import {ECardSize, TArtisticStyle, TCardSize, TToast} from "../types";
 import {useUploadImage} from "../hooks/use-upload-image";
-import {useSetUser} from "../hooks/user-set-user";
+import {useSetUser} from "../hooks/use-set-user";
 import {Toast} from "../components/toast";
 
 function generateUniqueRef(cardId: string, index: number) {
@@ -30,10 +30,10 @@ export default function MyCards() {
   });
 
   const [prompt, setPrompt] = useState("");
+  const [message, setMessage] = useState("");
   const [size, setSize] = useState<TCardSize>(ECardSize.SQUARE);
   const [artisticStyle, setArtisticStyle] = useState<TArtisticStyle>("cubisim");
   const [menuOpen, setMenuOpen] = useState(false);
-  const productCardRef = useRef<HTMLDivElement[]>([]);
   const isInitialRender = useRef(true);
   const generateCard = useGenerateCard();
   const userId = useUserId();
@@ -98,22 +98,6 @@ export default function MyCards() {
       });
   };
 
-  const handleAddMessage = (card: number) => {
-    const ref = productCardRef?.current[card];
-    console.log("handle add message", ref);
-
-    ref?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-
-    // setActiveTab("tab2");
-  };
-
-  console.log("cards", cards);
-  console.log("prompt", prompt);
-  console.log("artisticStyle", artisticStyle);
-
   return (
     <main className="relative py-4">
       <Header
@@ -159,7 +143,7 @@ export default function MyCards() {
         ) : (
           <div className="flex flex-col gap-16">
             {cards.map((card) =>
-              card.images.map((image, index) => (
+              card.images.map((image) => (
                 <ProductCard
                   key={image}
                   id={card.id}
@@ -168,22 +152,8 @@ export default function MyCards() {
                   title={card.title}
                   price={5}
                   hasBookmarked={card.saved}
-                  cta={
-                    <div className="flex justify-end">
-                      <Button
-                        size="fit"
-                        label="Add message"
-                        type="primary"
-                        handleOnClick={() =>
-                          handleAddMessage(generateUniqueRef(card.id, index))
-                        }
-                      />
-                    </div>
-                  }
-                  ref={(el) =>
-                    (productCardRef.current[generateUniqueRef(card.id, index)] =
-                      el)
-                  }
+                  message={message}
+                  setMessage={setMessage}
                 />
               ))
             )}
