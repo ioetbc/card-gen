@@ -19,13 +19,13 @@ export const setCard = async ({data, userId}: setCardProps) => {
 
   set(card, "createdAt", new Date());
 
-  console.log("card", card);
-
   try {
-    const ref = getCardRef({userId});
-    await ref.set(card);
-
-    console.log(`New card for user ${userId} added. via webhook`);
+    for (const image of card.output) {
+      const ref = getCardRef({userId});
+      console.log("image", image);
+      await ref.set({...card, image});
+      console.log(`New card for user ${userId} added. via webhook`);
+    }
   } catch (error) {
     console.error("Error updating card for user:", error);
   }

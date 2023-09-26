@@ -13,14 +13,6 @@ import {useUploadImage} from "../hooks/use-upload-image";
 import {useSetUser} from "../hooks/use-set-user";
 import {Toast} from "../components/toast";
 
-function generateUniqueRef(cardId: string, index: number) {
-  const encodedId = cardId
-    .split("")
-    .map((char) => char.charCodeAt(0))
-    .reduce((acc, code) => acc + code, 0);
-  return encodedId + index;
-}
-
 export default function MyCards() {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<TToast>({
@@ -142,21 +134,19 @@ export default function MyCards() {
           <Empty />
         ) : (
           <div className="flex flex-col gap-16">
-            {cards.map((card) =>
-              card.images.map((image) => (
-                <ProductCard
-                  key={image}
-                  id={card.id}
-                  image={image}
-                  prompt={card.prompt}
-                  title={card.title}
-                  price={5}
-                  hasBookmarked={card.saved}
-                  message={message}
-                  setMessage={setMessage}
-                />
-              ))
-            )}
+            {cards.map((card) => (
+              <ProductCard
+                key={card.id}
+                id={card.id}
+                image={card.image}
+                prompt={card.prompt}
+                title={card.title}
+                price={5}
+                hasBookmarked={card.saved}
+                message={message}
+                setMessage={setMessage}
+              />
+            ))}
           </div>
         )}
       </div>

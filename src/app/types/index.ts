@@ -56,7 +56,7 @@ export type TProduct = {
 export type TCard = {
   guidanceScale: number;
   id: string;
-  images: string[];
+  output: string[];
   initImage: string;
   negativePrompt: string;
   prompt: string;

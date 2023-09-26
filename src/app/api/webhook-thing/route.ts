@@ -11,8 +11,6 @@ export async function POST(request: NextRequest) {
 
   try {
     await setCard({data, userId});
-
-    console.log(`New card for user ${userId} added. via webhook`);
   } catch (error) {
     console.error("Error updating card for user:", error);
   }
