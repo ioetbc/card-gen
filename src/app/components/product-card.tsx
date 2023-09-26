@@ -11,6 +11,7 @@ import {Toast} from "./toast";
 import {Tabs} from "./tabs";
 import {CardMessage} from "./card-message";
 import {Button} from "./buttons/primary-button";
+import {useCheckoutSession} from "../hooks/use-checkout-session";
 
 type ProductCardProps = {
   id: string;
@@ -44,6 +45,7 @@ export const ProductCard = ({
   const controls = useAnimation();
   const userId = useUserId();
   const timerRef = useRef(0);
+  const checkout = useCheckoutSession();
 
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -61,6 +63,12 @@ export const ProductCard = ({
     });
 
     setActiveTab("tab2");
+  };
+
+  console.log("checkout?.data?.url", checkout?.data?.url);
+
+  const handlePurchase = () => {
+    window.location.assign(checkout?.data?.url);
   };
 
   const handleBookmarkClick = async () => {
@@ -160,12 +168,21 @@ export const ProductCard = ({
           </div>
           <div className="px-4 py-4 flex flex-col gap-2 border-t border-gray-200">
             <div className="flex justify-end">
-              <Button
-                size="fit"
-                label="Add message"
-                type="primary"
-                handleOnClick={() => handleAddMessage()}
-              />
+              {!message ? (
+                <Button
+                  size="fit"
+                  label="Add message"
+                  type="primary"
+                  handleOnClick={handleAddMessage}
+                />
+              ) : (
+                <Button
+                  size="fit"
+                  label="Purchase"
+                  type="primary"
+                  handleOnClick={handlePurchase}
+                />
+              )}
             </div>
           </div>
         </div>

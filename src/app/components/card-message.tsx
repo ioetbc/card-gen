@@ -23,7 +23,7 @@ export const CardMessage = ({
       setter: (value: string) => void
     ) =>
     (event: React.ChangeEvent<T>) => {
-      if (event.target.value.length === 0) return;
+      // if (!event.target.value.length) return;
       setter(event.target.value.trim());
     };
 

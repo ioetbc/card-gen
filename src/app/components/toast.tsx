@@ -12,7 +12,7 @@ export const Toast = ({setToast, toast}: ToastProps) => {
   return (
     <RadixToast.Provider swipeDirection="down">
       <RadixToast.Root
-        className="ToastRoot"
+        className={`ToastRoot bg-${toast.fill}-500`}
         open={toast.open}
         onOpenChange={() =>
           setToast({

@@ -21,16 +21,16 @@ type SelectProps = {
 const DropdownIndicator = () => null;
 const IndicatorSeparator = () => null;
 
-const ValueContainer = ({children, ...props}: any) => {
+const ValueContainer = ({children, icon, ...props}: any) => {
   return (
     <components.ValueContainer {...props}>
       <div className="flex gap-4">
-        {/* <Image
+        <Image
           src={`/${icon}.svg`}
           alt="Description for accessibility"
           width={20}
           height={20}
-        /> */}
+        />
         {React.Children.map(children, (child) =>
           child && child.type !== components.DropdownIndicator ? child : null
         )}
@@ -95,7 +95,11 @@ export const Select = ({
         value={options.find((option) => option.value === state)}
         options={options}
         onChange={handleChange}
-        components={{ValueContainer, DropdownIndicator, IndicatorSeparator}}
+        components={{
+          ValueContainer: (props) => <ValueContainer {...props} icon={icon} />,
+          DropdownIndicator,
+          IndicatorSeparator,
+        }}
         className="w-full text-sm"
         classNamePrefix="react-select"
         styles={customStyles}
