@@ -9,11 +9,15 @@ type ToastProps = {
 };
 
 export const Toast = ({setToast, toast}: ToastProps) => {
+  console.log("toast", `bg-${toast.fill}-500`);
   return (
     <RadixToast.Provider swipeDirection="down">
       <RadixToast.Root
-        className={`ToastRoot bg-${toast.fill}-500`}
+        className="ToastRoot"
         open={toast.open}
+        style={{
+          backgroundColor: `${toast.fill === "pink" ? "#e499df" : "red"}`,
+        }}
         onOpenChange={() =>
           setToast({
             open: !toast.open,

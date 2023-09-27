@@ -39,24 +39,25 @@ export const Header = ({menuOpen, setMenuOpen, component}: HeaderProps) => {
             />
           </div>
         </div>
+        {menuOpen && (
+          <div className="pt-4 bordet-t border-black">
+            {MENU_ITEMS.map((item) => (
+              <div
+                key={item.label}
+                className="text-sm text-black border-b border-gray-400 py-4 flex justify-between px-4"
+                onClick={() => console.log("clicked", item.label)}
+              >
+                <div>{item.label}</div>
+                <Image src="/arrow.svg" width={25} height={25} alt="logo" />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-      <div className="border-l border-r border-b border-t rounded-b-xl bg-white border-gray-400 w-full z-10">
+
+      <div className="border-b border-r border-l rounded-b-xl bg-white border-gray-400 w-full z-10">
         {component}
       </div>
-      {menuOpen && (
-        <div className="pt-4">
-          {MENU_ITEMS.map((item) => (
-            <div
-              key={item.label}
-              className="text-sm text-black border-b border-black py-4 flex justify-between px-4"
-              onClick={() => console.log("clicked", item.label)}
-            >
-              <div>{item.label}</div>
-              <Image src="/arrow.svg" width={25} height={25} alt="logo" />
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };

@@ -106,7 +106,7 @@ export const ProductCard = ({
   };
 
   return (
-    <div ref={cardRef}>
+    <div ref={cardRef} className="w-full">
       <div className="shadow-card rounded-xl">
         <div className="border rounded-xl border-gray-400 rounded-b-xl bg-white">
           <Tabs

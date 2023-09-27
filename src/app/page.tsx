@@ -14,10 +14,12 @@ import {ScrollY} from "./components/scroll-y";
 import {Section} from "./components/section";
 import {Filters} from "./components/filters";
 import {Tray} from "./components/tray";
+import {ProductCard} from "./components/product-card";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [headerOpen, setHeaderOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
   const router = useRouter();
   const userId = useUserId();
@@ -95,14 +97,18 @@ export default function Home() {
         >
           <ScrollY>
             {cards.map((card) => (
-              <ProductCardV2
-                key={card.id}
-                id={card.id}
-                image={card?.images?.[0]}
-                prompt={card.prompt}
-                title={card.title}
-                hasBookmarked={card.saved}
-              />
+              <div className="w-[325px]" key={card.id}>
+                <ProductCard
+                  id={card.id}
+                  image={card.image}
+                  prompt={card.prompt}
+                  title={card.title}
+                  price={5}
+                  hasBookmarked={card.saved}
+                  message={message}
+                  setMessage={setMessage}
+                />
+              </div>
             ))}
           </ScrollY>
         </Section>
