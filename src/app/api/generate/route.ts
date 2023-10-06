@@ -97,7 +97,7 @@ export async function POST(request: Request) {
     ...(initialImage && {init_image: initialImage}),
     strength: 0.8,
     samples: "4",
-    webhook: "card-m6wykft5f-ioetbc.vercel.app/api/webhook-thing",
+    webhook: "https://card-gen-self.vercel.app/api/webhook-thing",
     track_id: userId,
   };
 
