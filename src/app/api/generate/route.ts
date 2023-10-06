@@ -89,6 +89,8 @@ export async function POST(request: Request) {
     ? STABLE_DIFFUSION_IMAGE_2_IMAGE_URL
     : STABLE_DIFFUSION_TEXT_2_IMAGE_URL;
 
+  console.log("process.env.VERCEL_URL", process.env.VERCEL_URL);
+
   const body = {
     key: process.env.STABLE_DIFFUSION_API_KEY,
     prompt: muddlePromptTogether({prompt, artisticStyle}),
@@ -97,7 +99,7 @@ export async function POST(request: Request) {
     ...(initialImage && {init_image: initialImage}),
     strength: 0.8,
     samples: "4",
-    webhook: "https://card-gen-self.vercel.app/api/webhook-thing",
+    webhook: `https://${process.env.VERCEL_URL}/api/webhook-thing`,
     track_id: userId,
   };
 
