@@ -110,10 +110,12 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
+    console.log("data", data);
+
     if (data.status === "success") {
       try {
         console.log(`New card for user ${userId} added. via generate route`);
-        // await setCard({data, userId});
+        await setCard({data, userId});
       } catch (error) {
         console.error("Error updating card for user:", error);
         throw new Error("Error generating card");
