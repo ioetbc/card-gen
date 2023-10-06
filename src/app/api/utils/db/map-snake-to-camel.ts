@@ -10,7 +10,7 @@ export const mapSnakeToCamel = ({
   const card = {
     ...mapKeys(data.meta, (_, key) => camelCase(key)),
     output: data.output,
-  };
+  } as TCard;
 
   return card;
 };
