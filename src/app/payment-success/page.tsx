@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import {PrimaryButton} from "../components/buttons/primary-button";
+import {Button} from "../components/buttons/primary-button";
 
 export default function PaymentSuccess() {
   return (
@@ -10,9 +10,10 @@ export default function PaymentSuccess() {
         shortly.
       </h2>
       <div>
-        <PrimaryButton
+        <Button
           label="Go home"
           handleOnClick={() => window.location.assign("/")}
+          type="primary"
         />
       </div>
     </div>

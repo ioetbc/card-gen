@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import {PrimaryButton} from "../components/buttons/primary-button";
+import {Button} from "../components/buttons/primary-button";
 
 export default function PaymentSuccess() {
   return (
@@ -9,9 +9,10 @@ export default function PaymentSuccess() {
         There was an error processing your payment. Please try again.
       </h2>
       <div>
-        <PrimaryButton
+        <Button
           label="Go home"
           handleOnClick={() => window.location.assign("/")}
+          type="primary"
         />
       </div>
     </div>
