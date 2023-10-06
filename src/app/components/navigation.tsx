@@ -5,7 +5,7 @@ import {DragDrop} from "./drag-drop";
 import {TextArea} from "./inputs/text-area";
 import {ArtisticStyle} from "./artistic-style";
 import {TArtisticStyle} from "../types";
-import {PrimaryButton} from "./buttons/primary-button";
+import {Button} from "./buttons/primary-button";
 import {BottomSheet} from "react-spring-bottom-sheet";
 
 type NavigationProps = {
@@ -81,11 +81,12 @@ export const Navigation = ({
           <Accordion data={data} />
 
           {isDesktop && (
-            <PrimaryButton
+            <Button
               disabled={disabled}
               label="Generate"
               handleOnClick={handleGenerateCard}
               loading={loading}
+              type="primary"
             />
           )}
         </div>
@@ -96,11 +97,12 @@ export const Navigation = ({
       open={showNavigation}
       onDismiss={() => setShowNavigation && setShowNavigation(false)}
       footer={
-        <PrimaryButton
+        <Button
           loading={loading}
           disabled={disabled}
           label="Generate"
           handleOnClick={handleGenerateCard}
+          type="primary"
         />
       }
     >

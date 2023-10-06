@@ -2,7 +2,7 @@ import Image from "next/image";
 import React, {useEffect} from "react";
 import {BottomSheet} from "react-spring-bottom-sheet";
 import {TProduct} from "../types";
-import {PrimaryButton} from "./buttons/primary-button";
+import {Button} from "./buttons/primary-button";
 import {useCheckoutSession} from "../hooks/use-checkout-session";
 
 type ProductDetailsProps = {
@@ -44,7 +44,11 @@ export const ProductDetails = ({product, handleClose}: ProductDetailsProps) => {
           <h1 className="text-4xl">{product?.title}</h1>
           <p className="text-xl">{description}</p>
           <p className="text-xl">£{price}</p>
-          <PrimaryButton label="Purchase" handleOnClick={handleCheckout} />
+          <Button
+            label="Purchase"
+            handleOnClick={handleCheckout}
+            type="primary"
+          />
         </div>
       </div>
     </BottomSheet>

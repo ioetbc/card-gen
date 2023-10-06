@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {PrimaryButton} from "./buttons/primary-button";
+import {Button} from "./buttons/primary-button";
 
 type ProductCardProps = {
   title: string;
@@ -34,9 +34,10 @@ export const Card = ({url, prompt, title}: ProductCardProps) => {
         </p>
       </div> */}
       <div className="border border-black px-4 py-4 flex flex-col gap-2 bg-primary">
-        <PrimaryButton
+        <Button
           label="Customise"
           handleOnClick={() => console.log("clicked")}
+          type="primary"
         />
       </div>
     </div>
