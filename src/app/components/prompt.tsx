@@ -8,9 +8,9 @@ import {ARTISTIC_STYLES, CARD_SIZES} from "../constants";
 type PromptProps = {
   prompt: string;
   setPrompt: (value: string) => void;
-  setArtisticStyle: (value: TArtisticStyle) => void;
+  setArtisticStyle: (value: any) => void;
   size: string;
-  setSize: (value: string) => void;
+  setSize: (value: any) => void;
   artisticStyle: TArtisticStyle;
   handleSubmit: () => void;
   loading: boolean;

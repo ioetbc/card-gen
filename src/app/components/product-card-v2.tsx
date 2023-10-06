@@ -5,7 +5,7 @@ import {db} from "../firestore";
 import Image from "next/image";
 import {motion, useAnimation} from "framer-motion";
 
-import {TUser} from "../types";
+import {TToast, TUser} from "../types";
 import {useUserId} from "../hooks/use-user-id";
 import {Toast} from "./toast";
 import {Tabs} from "./tabs";
@@ -53,6 +53,11 @@ export const ProductCardV2 = ({
 }: ProductCardProps) => {
   const [readMore, setReadMore] = useState(false);
   const [open, setOpen] = useState(false);
+  const [toast, setToast] = useState<TToast>({
+    open: false,
+    description: "",
+    fill: "pink",
+  });
 
   const [bookmarked, setBookmarked] = useState(hasBookmarked);
   const controls = useAnimation();
@@ -140,13 +145,7 @@ export const ProductCardV2 = ({
           </div>
         </div>
       </div>
-      <Toast
-        setToast={setToast}
-        toast={toast}
-        description={`Card ${
-          hasBookmarked ? "added to" : "removed from"
-        } your bookmarks.`}
-      />
+      <Toast setToast={setToast} toast={toast} />
     </>
   );
 };
