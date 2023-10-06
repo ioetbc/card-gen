@@ -97,43 +97,47 @@ export async function POST(request: Request) {
     ...(initialImage && {init_image: initialImage}),
     strength: 0.8,
     samples: "4",
-    webhook: "https://ef65-188-28-106-173.ngrok-free.app/api/webhook-thing",
+    webhook: "card-m6wykft5f-ioetbc.vercel.app/api/webhook-thing",
     track_id: userId,
   };
 
   try {
-    const response = await fetch(api, {
+    fetch(api, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(body),
     });
 
-    const data = await response.json();
-
-    console.log("data", data);
-
-    if (data.status === "success") {
-      try {
-        console.log(`New card for user ${userId} added. via generate route`);
-        await setCard({data, userId});
-      } catch (error) {
-        console.error("Error updating card for user:", error);
-        throw new Error("Error generating card");
-      }
-    }
-
-    if (data.status === "error") {
-      throw new Error("Error generating card");
-    }
-
-    if (data.status === "processing") {
-      // OWWW I think add to the response if the toast should show on the front end. Can also add the title etc
-      // And in webhook thing also return the toast status
-    }
-
-    return new Response(JSON.stringify(data), {
+    return new Response(JSON.stringify("rely on the webhook???"), {
       headers: {"Content-Type": "application/json"},
     });
+
+    // const data = await response.json();
+
+    // console.log("data", data);
+
+    // if (data.status === "success") {
+    //   try {
+    //     console.log(`New card for user ${userId} added. via generate route`);
+    //     await setCard({data, userId});
+    //   } catch (error) {
+    //     console.error("Error updating card for user:", error);
+    //     throw new Error("Error generating card");
+    //   }
+    // }
+
+    // if (data.status === "error") {
+    //   throw new Error("Error generating card");
+    // }
+
+    // if (data.status === "processing") {
+    //   // OWWW I think add to the response if the toast should show on the front end. Can also add the title etc
+    //   // And in webhook thing also return the toast status
+    // }
+
+    // return new Response(JSON.stringify(data), {
+    //   headers: {"Content-Type": "application/json"},
+    // });
   } catch (cause) {
     console.log("somethign fucked up cause", cause);
     return new Response("something went wrong", {status: 500});
