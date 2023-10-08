@@ -101,7 +101,7 @@ export async function POST(request: Request) {
     ...(initialImage && {init_image: initialImage}),
     strength: 0.8,
     samples: "4",
-    webhook: `https://hooks.zapier.com/hooks/catch/12938210/3st3dtx/`,
+    webhook: "https://card-gen-git-main-ioetbc.vercel.app/api/webhook-thing",
     track_id: userId,
   };
 
@@ -137,6 +137,7 @@ export async function POST(request: Request) {
     }
 
     if (data.status === "processing") {
+      console.log("still processing, relying on the webhook");
       // OWWW I think add to the response if the toast should show on the front end. Can also add the title etc
       // And in webhook thing also return the toast status
     }
