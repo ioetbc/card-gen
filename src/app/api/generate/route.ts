@@ -99,9 +99,11 @@ export async function POST(request: Request) {
     ...(initialImage && {init_image: initialImage}),
     strength: 0.8,
     samples: "4",
-    webhook: `https://card-gen-git-main-ioetbc.vercel.app/api/webhook-thing`,
+    webhook: `https://b941-188-28-104-182.ngrok-free.app/api/webhook-thing`,
     track_id: userId,
   };
+
+  console.log("body", body);
 
   try {
     fetch(api, {
