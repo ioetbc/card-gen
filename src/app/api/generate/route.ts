@@ -99,7 +99,7 @@ export async function POST(request: Request) {
     ...(initialImage && {init_image: initialImage}),
     strength: 0.8,
     samples: "4",
-    webhook: `https://b941-188-28-104-182.ngrok-free.app/api/webhook-thing`,
+    webhook: `https://hooks.zapier.com/hooks/catch/12938210/3st3dtx/`,
     track_id: userId,
   };
 
