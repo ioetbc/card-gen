@@ -159,7 +159,7 @@ export const ProductCard = ({
             <div className="flex justify-between">
               <>
                 <div className="col-span-2 py-4 flex justify-end items-center">
-                  <motion.div animate={controls}>
+                  {/* <motion.div animate={controls}>
                     <Image
                       src={
                         bookmarked ? "/bookmark-filled.svg" : "/bookmark.svg"
@@ -169,7 +169,7 @@ export const ProductCard = ({
                       alt="bookmark icon"
                       onClick={handleBookmarkClick}
                     />
-                  </motion.div>
+                  </motion.div> */}
                 </div>
                 {!message ? (
                   <Button

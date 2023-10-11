@@ -114,7 +114,7 @@ export const ProductCardV2 = ({
                   <h3 className="text-lg line-clamp-1">{title}</h3>
                 </div>
 
-                <motion.div
+                {/* <motion.div
                   animate={controls}
                   className="w-[24px] h-[24px] relative col-span-1 flex items-center"
                 >
@@ -122,10 +122,10 @@ export const ProductCardV2 = ({
                     src={bookmarked ? "/bookmark-filled.svg" : "/bookmark.svg"}
                     width={24}
                     height={24}
-                    alt="price"
+                    alt="bookmark icon"
                     onClick={handleBookmarkClick}
                   />
-                </motion.div>
+                </motion.div> */}
               </div>
             </div>
             <div className="px-4 py-4 flex flex-col gap-2">
