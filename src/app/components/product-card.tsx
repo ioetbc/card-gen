@@ -136,22 +136,11 @@ export const ProductCard = ({
           />
           <div className="border-b border-gray-200 px-4 flex items-center bg-white ">
             <div className="grid grid-cols-12 gap-4">
-              <div className="flex items-center col-span-3 border-gray-200 border-r pr-4 py-4">
-                <Image src="/price.png" width={100} height={100} alt="price" />
+              <div className="flex items-center col-span-4 border-gray-200 border-r pr-4 py-4">
+                <Image src="/price.svg" width={100} height={100} alt="price" />
               </div>
               <div className="col-span-7 py-4 flex justify-between items-center">
                 <h3 className="text-lg">{title}</h3>
-              </div>
-              <div className="col-span-2 py-4 flex justify-end items-center">
-                <motion.div animate={controls}>
-                  <Image
-                    src={bookmarked ? "/bookmark-filled.svg" : "/bookmark.svg"}
-                    width={24}
-                    height={24}
-                    alt="price"
-                    onClick={handleBookmarkClick}
-                  />
-                </motion.div>
               </div>
             </div>
           </div>
@@ -167,22 +156,37 @@ export const ProductCard = ({
             </p>
           </div>
           <div className="px-4 py-4 flex flex-col gap-2 border-t border-gray-200">
-            <div className="flex justify-end">
-              {!message ? (
-                <Button
-                  size="fit"
-                  label="Add message"
-                  type="primary"
-                  handleOnClick={handleAddMessage}
-                />
-              ) : (
-                <Button
-                  size="fit"
-                  label="Purchase"
-                  type="primary"
-                  handleOnClick={handlePurchase}
-                />
-              )}
+            <div className="flex justify-between">
+              <>
+                <div className="col-span-2 py-4 flex justify-end items-center">
+                  <motion.div animate={controls}>
+                    <Image
+                      src={
+                        bookmarked ? "/bookmark-filled.svg" : "/bookmark.svg"
+                      }
+                      width={24}
+                      height={24}
+                      alt="price"
+                      onClick={handleBookmarkClick}
+                    />
+                  </motion.div>
+                </div>
+                {!message ? (
+                  <Button
+                    size="fit"
+                    label="Add message"
+                    type="primary"
+                    handleOnClick={handleAddMessage}
+                  />
+                ) : (
+                  <Button
+                    size="fit"
+                    label="Purchase"
+                    type="primary"
+                    handleOnClick={handlePurchase}
+                  />
+                )}
+              </>
             </div>
           </div>
         </div>
