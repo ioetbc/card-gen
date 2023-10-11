@@ -1,4 +1,4 @@
-import {ArtisticOptions, FooterItem, TArtisticStyle} from "./types";
+import {ArtisticOptions, FooterItem} from "./types";
 
 export const STABLE_DIFFUSION_IMAGE_2_IMAGE_URL =
   "https://stablediffusionapi.com/api/v3/img2img";
@@ -158,8 +158,8 @@ export const FOOTER_ITEMS: FooterItem[] = [
     url: "privacy-policy",
   },
   {
-    label: "Terms of service",
-    url: "terms-of-service",
+    label: "Terms of use",
+    url: "terms-of-use",
   },
   {
     label: "Contact us",

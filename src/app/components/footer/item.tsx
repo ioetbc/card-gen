@@ -8,9 +8,10 @@ type FooterItemProps = {
 
 export const FooterItem = ({label, url}: FooterItemProps) => {
   const router = useRouter();
+
   return (
     <div
-      className="w-full py-4 flex justify-between"
+      className="w-full py-4 flex justify-between cursor-pointer"
       onClick={() => router.push(url)}
     >
       <p className="underline">{label}</p>
