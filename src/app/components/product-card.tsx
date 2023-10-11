@@ -166,7 +166,7 @@ export const ProductCard = ({
                       }
                       width={24}
                       height={24}
-                      alt="price"
+                      alt="bookmark icon"
                       onClick={handleBookmarkClick}
                     />
                   </motion.div>
