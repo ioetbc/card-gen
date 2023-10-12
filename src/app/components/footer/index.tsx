@@ -18,13 +18,6 @@ export const Footer = () => {
           porro qui incidunt nemo enim aperiam? Voluptatum iure hic vel repellat
           atque.
         </p>
-        <Image
-          src="/b-corp.svg"
-          width={100}
-          height={100}
-          alt="B corp logo"
-          className="self-end"
-        />
       </div>
     </div>
   );

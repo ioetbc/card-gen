@@ -165,8 +165,4 @@ export const FOOTER_ITEMS: FooterItem[] = [
     label: "Contact us",
     url: "contact-us",
   },
-  {
-    label: "FAQs",
-    url: "faqs",
-  },
 ];

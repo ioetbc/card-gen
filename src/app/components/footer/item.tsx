@@ -12,7 +12,13 @@ export const FooterItem = ({label, url}: FooterItemProps) => {
   return (
     <div
       className="w-full py-4 flex justify-between cursor-pointer"
-      onClick={() => router.push(url)}
+      onClick={() => {
+        if (url === "contact-us") {
+          window.open("mailto:will@cardtothefuture.com", "noopener-noreferrer");
+        } else {
+          router.push(url);
+        }
+      }}
     >
       <p className="underline">{label}</p>
       <Image src="/arrow-top-right.svg" width={20} height={20} alt="logo" />

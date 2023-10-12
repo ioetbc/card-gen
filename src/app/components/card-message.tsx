@@ -23,8 +23,8 @@ export const CardMessage = ({
       setter: (value: string) => void
     ) =>
     (event: React.ChangeEvent<T>) => {
-      // if (!event.target.value.length) return;
-      setter(event.target.value.trim());
+      if (!event.target.value.length) return;
+      setter(event.target.value);
     };
 
   const handleBlurMessage = () => {

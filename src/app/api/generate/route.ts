@@ -101,8 +101,7 @@ export async function POST(request: Request) {
     ...(initialImage && {init_image: initialImage}),
     strength: 0.8,
     samples: "4",
-    // webhook: "https://card-gen-git-main-ioetbc.vercel.app/api/webhook-thing",
-    webhook: "https://4a37-62-255-165-242.ngrok-free.app",
+    webhook: "https://cardtothefuture.com/api/webhook-thing",
     track_id: userId,
   };
 
@@ -123,15 +122,15 @@ export async function POST(request: Request) {
 
     console.log("data", data);
 
-    if (data.status === "success") {
-      try {
-        console.log(`New card for user ${userId} added. via generate route`);
-        await setCard({data, userId});
-      } catch (error) {
-        console.error("Error updating card for user:", error);
-        throw new Error("Error generating card");
-      }
-    }
+    // if (data.status === "success") {
+    //   try {
+    //     console.log(`New card for user ${userId} added. via generate route`);
+    //     await setCard({data, userId});
+    //   } catch (error) {
+    //     console.error("Error updating card for user:", error);
+    //     throw new Error("Error generating card");
+    //   }
+    // }
 
     if (data.status === "error") {
       throw new Error("Error generating card");
