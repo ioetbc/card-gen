@@ -13,6 +13,7 @@ import {Section} from "./components/section";
 import {Filters} from "./components/filters";
 import {Tray} from "./components/tray";
 import {ProductCard} from "./components/product-card";
+import AccordionDemo from "./components/accordion";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -33,7 +34,6 @@ export default function Home() {
           component={
             <>
               <div className="p-4">
-                {/* <Filters /> */}
                 <Button
                   label="Create Card"
                   handleOnClick={() => router.push("my-cards")}
@@ -71,6 +71,14 @@ export default function Home() {
               </div>
             ))}
           </ScrollY>
+        </Section>
+
+        <Section
+          title="Frequently asked questions"
+          pre="Some frequently asked questions about rubberducker."
+          content={null}
+        >
+          <AccordionDemo />
         </Section>
 
         <Section title="" content={<Tray />}>
