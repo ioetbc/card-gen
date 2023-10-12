@@ -1,15 +1,9 @@
-import {db} from "../firebase";
 import {
   NEGATIVE_PROMPT,
   STABLE_DIFFUSION_IMAGE_2_IMAGE_URL,
   STABLE_DIFFUSION_TEXT_2_IMAGE_URL,
 } from "@/app/constants";
 import {ECardSize, TArtisticStyle, TCardSize} from "@/app/types";
-import set from "lodash/set";
-import {generateCardTitle} from "../utils/gpt/generate-card-title";
-import {getCardRef} from "../utils/db/get-card-ref";
-import {mapSnakeToCamel} from "../utils/db/map-snake-to-camel";
-import {setCard} from "../utils/db/set-card";
 
 type MuddlePromptTogetherProps = {
   prompt: string;
@@ -114,32 +108,12 @@ export async function POST(request: Request) {
       body: JSON.stringify(body),
     });
 
-    // return new Response(JSON.stringify("rely on the webhook???"), {
-    //   headers: {"Content-Type": "application/json"},
-    // });
-
     const data = await response.json();
 
     console.log("data", data);
 
-    // if (data.status === "success") {
-    //   try {
-    //     console.log(`New card for user ${userId} added. via generate route`);
-    //     await setCard({data, userId});
-    //   } catch (error) {
-    //     console.error("Error updating card for user:", error);
-    //     throw new Error("Error generating card");
-    //   }
-    // }
-
     if (data.status === "error") {
       throw new Error("Error generating card");
-    }
-
-    if (data.status === "processing") {
-      console.log("still processing, relying on the webhook");
-      // OWWW I think add to the response if the toast should show on the front end. Can also add the title etc
-      // And in webhook thing also return the toast status
     }
 
     return new Response(JSON.stringify(data), {
