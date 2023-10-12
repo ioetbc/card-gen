@@ -12,6 +12,7 @@ import {ECardSize, TArtisticStyle, TCardSize, TToast} from "../types";
 import {useUploadImage} from "../hooks/use-upload-image";
 import {useSetUser} from "../hooks/use-set-user";
 import {Toast} from "../components/toast";
+import {useFirestoreBookmarkedCard} from "../hooks/use-firestore-bookmarked-card";
 
 export default function MyCards() {
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,7 @@ export default function MyCards() {
   const generateCard = useGenerateCard();
   const userId = useUserId();
 
-  const {cards} = useFirestoreSnapshot({
+  const {cards} = useFirestoreBookmarkedCard({
     userId,
   });
   const {upload, downloadURL} = useUploadImage();
@@ -69,7 +70,7 @@ export default function MyCards() {
     setLoading(true);
     setToast({
       open: true,
-      description: "Bare with us 30 ish seconds",
+      description: "Typically takes 30 ish seconds",
       fill: "pink",
     });
     await generateCard

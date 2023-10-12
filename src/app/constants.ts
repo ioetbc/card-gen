@@ -150,8 +150,8 @@ export const FOOTER_ITEMS: FooterItem[] = [
     url: "my-bookmarks",
   },
   {
-    label: "My cards",
-    url: "my-cards",
+    label: "Generate",
+    url: "generate",
   },
   {
     label: "Privacy policy",

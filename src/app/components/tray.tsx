@@ -61,7 +61,7 @@ export const Tray = () => {
             size="full"
             label="Generate a card"
             type="primary"
-            handleOnClick={() => router.push("/my-cards")}
+            handleOnClick={() => router.push("/generate")}
           />
         </div>
       </div>

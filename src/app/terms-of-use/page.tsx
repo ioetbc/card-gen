@@ -19,7 +19,7 @@ export default function TermsOfUse() {
             <div className="p-4">
               <Button
                 label="Create Card"
-                handleOnClick={() => router.push("my-cards")}
+                handleOnClick={() => router.push("generate")}
                 disabled={false}
                 type="primary"
                 size="full"
