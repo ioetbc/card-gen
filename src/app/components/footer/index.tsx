@@ -13,10 +13,9 @@ export const Footer = () => {
       </div>
       <div className="pt-8 pb-4 text-white flex gap-8 flex-col">
         <p>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat,
-          dolorum hic, perspiciatis consequuntur quam in earum excepturi iste
-          porro qui incidunt nemo enim aperiam? Voluptatum iure hic vel repellat
-          atque.
+          CardToTheFuture is a trading name of ioetbc/rubberducker ltd.
+          (14120131) registered in England & Wales with their registered office
+          at 76 Bushey Hill Road, Camberwell, London, United Kingdom, SE5 8QJ.
         </p>
       </div>
     </div>
