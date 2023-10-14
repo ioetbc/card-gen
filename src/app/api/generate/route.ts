@@ -11,41 +11,56 @@ type MuddlePromptTogetherProps = {
 };
 
 const mapArtisticStylc = (artisticStyle: TArtisticStyle) => {
+  if (!artisticStyle) return "";
+  let style = "";
+
   switch (artisticStyle) {
     case "3d":
-      return "3d";
+      style = "3d";
+      break;
     case "art-deco":
-      return "Art deco";
+      style = "Art deco";
+      break;
     case "art-nouveau":
-      return "Art nouveau";
+      style = "Art nouveau";
+      break;
     case "charcoal":
-      return "Charcoal";
+      style = "Charcoal";
+      break;
     case "comic":
-      return "Comic";
+      style = "Comic";
+      break;
     case "cubisim":
-      return "Cubism";
+      style = "Cubism";
+      break;
     case "john-sargent":
-      return "John Sargent";
+      style = "John Sargent";
+      break;
     case "pop-art":
-      return "Pop art";
+      style = "Pop art";
+      break;
     case "stone-sculpture":
-      return "Stone sculpture";
+      style = "Stone sculpture";
+      break;
     case "van-gogh":
-      return "Vincent van Gogh";
+      style = "Vincent van Gogh";
+      break;
     case "picasso":
-      return "Picasso";
+      style = "Picasso";
+      break;
     default:
-      return "photograph";
+      style = "";
+      break;
   }
+
+  return `, in the artistic style of ${style}`;
 };
 
 const muddlePromptTogether = ({
   prompt,
   artisticStyle,
 }: MuddlePromptTogetherProps) => {
-  return `${prompt}, in the artistic style of ${mapArtisticStylc(
-    artisticStyle
-  )}`;
+  return `${prompt} ${mapArtisticStylc(artisticStyle)}`;
 };
 
 const widthAndHeight = (size: TCardSize) => {
@@ -85,7 +100,7 @@ export async function POST(request: Request) {
     ? STABLE_DIFFUSION_IMAGE_2_IMAGE_URL
     : STABLE_DIFFUSION_TEXT_2_IMAGE_URL;
 
-  console.log("process.env.VERCEL_URLs", process.env.VERCEL_URL);
+  console.log("muddle prompt", muddlePromptTogether({prompt, artisticStyle}));
 
   const body = {
     key: process.env.STABLE_DIFFUSION_API_KEY,

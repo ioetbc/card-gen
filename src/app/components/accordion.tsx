@@ -72,7 +72,9 @@ const AccordionTrigger = forwardRef<HTMLButtonElement, {children: ReactNode}>(
   ({children}, forwardedRef) => (
     <Accordion.Header className="flex">
       <Accordion.Trigger
-        className={"flex bg-white p-4 outline-none cursor-pointer text-left"}
+        className={
+          "flex w-full justify-between bg-white p-4 outline-none cursor-pointer text-left"
+        }
         ref={forwardedRef}
       >
         {children}
@@ -89,7 +91,7 @@ const AccordionContent = forwardRef<HTMLDivElement, {children: ReactNode}>(
   ({children}, forwardedRef) => (
     <Accordion.Content
       className={
-        "text-mauve11 bg-mauve2 data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden"
+        "bg-something-100 data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden"
       }
       ref={forwardedRef}
     >

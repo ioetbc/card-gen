@@ -9,7 +9,7 @@ type Option = {
 };
 
 type SelectProps = {
-  state: TArtisticStyle | string;
+  state: TArtisticStyle | string | null;
   setState: (value: TArtisticStyle | string) => void;
   borderType: "left" | "right"; // new prop
   options: Option[];

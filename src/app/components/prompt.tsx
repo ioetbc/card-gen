@@ -11,7 +11,7 @@ type PromptProps = {
   setArtisticStyle: (value: any) => void;
   size: string;
   setSize: (value: any) => void;
-  artisticStyle: TArtisticStyle;
+  artisticStyle: TArtisticStyle | null;
   handleSubmit: () => void;
   loading: boolean;
   handleFile: (file: File) => void;

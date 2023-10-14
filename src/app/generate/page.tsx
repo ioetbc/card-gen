@@ -24,7 +24,9 @@ export default function MyCards() {
   const [prompt, setPrompt] = useState("");
   const [message, setMessage] = useState("");
   const [size, setSize] = useState<TCardSize>(ECardSize.SQUARE);
-  const [artisticStyle, setArtisticStyle] = useState<TArtisticStyle>("cubisim");
+  const [artisticStyle, setArtisticStyle] = useState<TArtisticStyle | null>(
+    null
+  );
   const [menuOpen, setMenuOpen] = useState(false);
   const isInitialRender = useRef(true);
   const generateCard = useGenerateCard();
