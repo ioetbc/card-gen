@@ -22,7 +22,8 @@ export default function MyCards() {
   });
 
   const [prompt, setPrompt] = useState("");
-  const [message, setMessage] = useState("");
+  const [frontMessage, setFrontMessage] = useState("");
+  const [insideMessage, setInsideMessage] = useState("");
   const [size, setSize] = useState<TCardSize>(ECardSize.SQUARE);
   const [artisticStyle, setArtisticStyle] = useState<TArtisticStyle | null>(
     null
@@ -39,8 +40,6 @@ export default function MyCards() {
   const setUser = useSetUser();
 
   useEffect(() => {
-    console.log("firestore document update", cards.length);
-
     if (!cards.length) return;
 
     if (isInitialRender.current) {
@@ -59,6 +58,7 @@ export default function MyCards() {
 
   const handleFile = async (file: File) => {
     await upload({file, userId});
+    console.log("downloadURL", downloadURL);
     if (!downloadURL) return;
 
     await setUser.mutateAsync({
@@ -79,10 +79,10 @@ export default function MyCards() {
         userId,
         prompt,
         artisticStyle,
+        initialImage: downloadURL,
         size,
       })
       .catch((error) => {
-        console.log("error calling handleGenerateCard", error);
         setToast({
           open: true,
           description: "There was an error, please try again",
@@ -145,8 +145,10 @@ export default function MyCards() {
                 title={card.title}
                 price={5}
                 hasBookmarked={card.saved}
-                message={message}
-                setMessage={setMessage}
+                frontMessage={frontMessage}
+                setFrontMessage={setFrontMessage}
+                insideMessage={insideMessage}
+                setInsideMessage={setInsideMessage}
               />
             ))}
           </div>

@@ -30,10 +30,12 @@ export const useUploadImage = () => {
           console.log(`Upload is ${progress}% done`);
         },
         (error: StorageError) => {
+          console.error("Error uploading image:", error);
           setError(error);
         },
         async () => {
           const url = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log("File available at", url);
           setDownloadURL(url);
         }
       );

@@ -1,7 +1,7 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const YOUR_DOMAIN = "http://localhost:3000";
 
-export async function POST() {
+export async function GET() {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -17,7 +17,6 @@ export async function POST() {
     },
   });
 
-  console.log("session.url", session.url);
   return new Response(
     JSON.stringify({
       url: session.url,

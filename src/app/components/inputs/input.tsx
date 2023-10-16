@@ -5,7 +5,7 @@ type TextAreaProps = {
   handleChange: (value: string) => void;
   placeholder: string;
   handleSubmit: () => void;
-  icon: string;
+  icon?: string;
 };
 
 // TODO = Make the input a textarea and expand in height as the user types
@@ -43,15 +43,17 @@ export const Input = ({
         placeholder={placeholder}
       />
 
-      <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-        <Image
-          src={`/${icon}.svg`}
-          width={20}
-          height={20}
-          alt="logo"
-          onClick={handleOnClick}
-        />
-      </div>
+      {icon && (
+        <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+          <Image
+            src={`/${icon}.svg`}
+            width={20}
+            height={20}
+            alt="logo"
+            onClick={handleOnClick}
+          />
+        </div>
+      )}
     </div>
   );
 };

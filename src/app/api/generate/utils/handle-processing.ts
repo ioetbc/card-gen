@@ -26,8 +26,6 @@ export const handleProcessing = ({
 
         const thing: any = await response.json();
 
-        console.log("thing", thing);
-
         resolve(thing);
       } catch (error) {
         reject(error);

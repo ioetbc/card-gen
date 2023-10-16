@@ -89,9 +89,6 @@ export async function POST(request: Request) {
   const {userId, initialImage, prompt, artisticStyle, size} =
     await request.json();
 
-  console.log("initialImage", initialImage);
-  console.log("artisticStyle", artisticStyle);
-
   if (!prompt) {
     return new Response("prompt is required", {status: 400});
   }
@@ -99,8 +96,6 @@ export async function POST(request: Request) {
   const api = initialImage
     ? STABLE_DIFFUSION_IMAGE_2_IMAGE_URL
     : STABLE_DIFFUSION_TEXT_2_IMAGE_URL;
-
-  console.log("muddle prompt", muddlePromptTogether({prompt, artisticStyle}));
 
   const body = {
     key: process.env.STABLE_DIFFUSION_API_KEY,
@@ -114,8 +109,6 @@ export async function POST(request: Request) {
     track_id: userId,
   };
 
-  console.log("body", body);
-
   try {
     const response = await fetch(api, {
       method: "POST",
@@ -125,8 +118,6 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    console.log("data", data);
-
     if (data.status === "error") {
       throw new Error("Error generating card");
     }
@@ -135,7 +126,6 @@ export async function POST(request: Request) {
       headers: {"Content-Type": "application/json"},
     });
   } catch (cause) {
-    console.log("somethign fucked up cause", cause);
     return new Response("something went wrong", {status: 500});
   }
 }

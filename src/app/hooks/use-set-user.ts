@@ -7,8 +7,6 @@ type UseGenerateCardProps = {
 
 export const useSetUser = () => {
   return useMutation(async ({userId, initialImage}: UseGenerateCardProps) => {
-    console.log("calling endpoint with these args", {userId, initialImage});
-
     const response = await fetch("/api/set-user", {
       method: "POST",
       body: JSON.stringify({

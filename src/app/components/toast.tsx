@@ -9,7 +9,6 @@ type ToastProps = {
 };
 
 export const Toast = ({setToast, toast}: ToastProps) => {
-  console.log("toast", `bg-${toast.fill}-500`);
   return (
     <RadixToast.Provider swipeDirection="down">
       <RadixToast.Root

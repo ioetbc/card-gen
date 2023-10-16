@@ -24,7 +24,6 @@ export const ArtisticStyle = ({
   handleArtisticStyleChange,
 }: ArtisticStyleProps) => {
   const handleChange = (value: TArtisticStyle) => {
-    console.log("value", value);
     handleArtisticStyleChange(value);
   };
 

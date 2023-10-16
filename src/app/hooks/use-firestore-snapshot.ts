@@ -6,8 +6,6 @@ import {TCard} from "../types";
 export const useFirestoreSnapshot = ({userId}: {userId: string}) => {
   const [cards, setCards] = useState<TCard[]>([]);
 
-  console.log("userId", userId);
-
   useEffect(() => {
     if (!userId) {
       console.error("userId is not provided!");

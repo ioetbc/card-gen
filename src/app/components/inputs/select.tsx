@@ -1,4 +1,4 @@
-import React, {memo, useMemo} from "react";
+import React, {memo} from "react";
 import {default as ReactSelect, components} from "react-select";
 import {TArtisticStyle} from "@/app/types";
 import Image from "next/image";

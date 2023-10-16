@@ -38,8 +38,6 @@ export default function MyCards() {
   const setUser = useSetUser();
 
   useEffect(() => {
-    console.log("firestore document update", cards.length);
-
     if (!cards.length) return;
 
     if (isInitialRender.current) {

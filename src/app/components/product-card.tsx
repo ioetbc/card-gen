@@ -1,4 +1,4 @@
-import React, {ReactNode, forwardRef, useRef, useState} from "react";
+import React, {ReactNode, forwardRef, useEffect, useRef, useState} from "react";
 import {doc, updateDoc} from "firebase/firestore";
 import {db} from "../firestore";
 
@@ -12,6 +12,7 @@ import {Tabs} from "./tabs";
 import {CardMessage} from "./card-message";
 import {Button} from "./buttons/primary-button";
 import {useCheckoutSession} from "../hooks/use-checkout-session";
+import CardData from "./card-data";
 
 type ProductCardProps = {
   id: string;
@@ -20,8 +21,10 @@ type ProductCardProps = {
   price: number;
   prompt: string;
   hasBookmarked: boolean;
-  message: string;
-  setMessage: (value: string) => void;
+  frontMessage: string;
+  setFrontMessage: (value: string) => void;
+  insideMessage: string;
+  setInsideMessage: (value: string) => void;
 };
 
 export const ProductCard = ({
@@ -30,9 +33,12 @@ export const ProductCard = ({
   title,
   prompt,
   id,
-  message,
-  setMessage,
+  frontMessage,
+  setFrontMessage,
+  insideMessage,
+  setInsideMessage,
 }: ProductCardProps) => {
+  const checkout = useCheckoutSession();
   const [readMore, setReadMore] = useState(false);
   const [activeTab, setActiveTab] = useState("tab1");
   const [toast, setToast] = useState<TToast>({
@@ -45,7 +51,6 @@ export const ProductCard = ({
   const controls = useAnimation();
   const userId = useUserId();
   const timerRef = useRef(0);
-  const checkout = useCheckoutSession();
 
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -115,22 +120,21 @@ export const ProductCard = ({
             tab1Content={
               <div className="relative w-full aspect-square">
                 <Image
-                  // src="/placeholder.jpg"
                   src={image}
                   fill={true}
                   alt="thing"
                   className="rounded-t-xl "
                 />
+                <p className="absolute z-10 bg-white bottom-0 w-full px-4 text-center">
+                  {frontMessage}
+                </p>
               </div>
             }
             tab2Content={
               <div className="relative w-full aspect-square p-4">
-                <CardMessage
-                  activeTab={activeTab}
-                  setMessage={setMessage}
-                  message={message}
-                  id={id}
-                />
+                <p className="bg-white w-full px-4 text-center">
+                  {insideMessage}
+                </p>
               </div>
             }
           />
@@ -155,38 +159,31 @@ export const ProductCard = ({
               {readMore ? "Show less" : "Show more"}
             </p>
           </div>
+          <div className="border-t border-gray-200">
+            <CardData
+              setFrontMessage={setFrontMessage}
+              setInsideMessage={setInsideMessage}
+            />
+          </div>
           <div className="px-4 py-4 flex flex-col gap-2 border-t border-gray-200">
             <div className="flex justify-between">
-              <>
-                <div className="col-span-2 py-4 flex justify-end items-center">
-                  <motion.div animate={controls}>
-                    <Image
-                      src={
-                        bookmarked ? "/bookmark-filled.svg" : "/bookmark.svg"
-                      }
-                      width={24}
-                      height={24}
-                      alt="bookmark icon"
-                      onClick={handleBookmarkClick}
-                    />
-                  </motion.div>
-                </div>
-                {!message ? (
-                  <Button
-                    size="fit"
-                    label="Add message"
-                    type="primary"
-                    handleOnClick={handleAddMessage}
+              <div className="col-span-2 py-4 flex items-center">
+                <motion.div animate={controls}>
+                  <Image
+                    src={bookmarked ? "/bookmark-filled.svg" : "/bookmark.svg"}
+                    width={24}
+                    height={24}
+                    alt="bookmark icon"
+                    onClick={handleBookmarkClick}
                   />
-                ) : (
-                  <Button
-                    size="fit"
-                    label="Purchase"
-                    type="primary"
-                    handleOnClick={handlePurchase}
-                  />
-                )}
-              </>
+                </motion.div>
+              </div>
+              <Button
+                size="fit"
+                label="Purchase"
+                type="primary"
+                handleOnClick={handlePurchase}
+              />
             </div>
           </div>
         </div>

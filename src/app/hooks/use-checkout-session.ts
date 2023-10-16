@@ -1,13 +1,23 @@
-import {useMutation} from "@tanstack/react-query";
+import {useQuery} from "@tanstack/react-query";
 
 export const useCheckoutSession = () => {
-  console.log("calling checkout api");
-  return useMutation(async () => {
-    const response = await fetch("/api/checkout-session", {
-      method: "POST",
-    });
+  return useQuery({
+    queryKey: ["checkout-session"],
+    queryFn: async () => {
+      console.log("calling checkout-session endpoint");
+      const response = await fetch("/api/checkout-session", {
+        method: "GET", // Changed to a GET request
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    const data = await response.json();
-    return data;
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      return data;
+    },
   });
 };

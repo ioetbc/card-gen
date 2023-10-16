@@ -13,14 +13,11 @@ const openai = new OpenAI({
 
 export const generateCardTitle = async ({prompt}: GenerateCardTitleProps) => {
   const content = getPrompt(prompt);
-  console.log("content", content);
 
   const gptResponse = await openai.chat.completions.create({
     messages: [{role: "user", content}],
     model: "gpt-3.5-turbo",
   });
-
-  console.log("gptResponse", gptResponse.choices);
 
   const text = gptResponse.choices[0].message.content;
 
