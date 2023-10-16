@@ -23,14 +23,14 @@ export const Tabs = ({
       aria-label="Manage your account"
     >
       <RadixTabs.Trigger
-        className="bg-white border-r px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none text-mauve11 outline-none cursor-default data-[state=active]:bg-something-100"
+        className="bg-white border-r px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none text-mauve11 outline-none cursor-default data-[state=active]:bg-something-100 mt-24"
         value="tab1"
         onClick={() => setActiveTab("tab1")}
       >
         Front
       </RadixTabs.Trigger>
       <RadixTabs.Trigger
-        className="bg-white px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none text-mauve11 outline-none cursor-default data-[state=active]:bg-something-100"
+        className="bg-white px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none text-mauve11 outline-none cursor-default data-[state=active]:bg-something-100 mt-24"
         value="tab2"
         onClick={() => setActiveTab("tab2")}
       >

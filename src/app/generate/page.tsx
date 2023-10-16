@@ -135,7 +135,7 @@ export default function MyCards() {
       />
       <div className="relative py-14 flex flex-col gap-8">
         {!cards.length ? (
-          <Empty />
+          <Empty label="No cards generated yet." />
         ) : (
           <div className="flex flex-col gap-16">
             {cards.map((card) => (

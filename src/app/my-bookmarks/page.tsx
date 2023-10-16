@@ -77,6 +77,7 @@ export default function MyCards() {
         prompt,
         artisticStyle,
         size,
+        initialImage: downloadURL,
       })
       .catch((error) => {
         console.log("error calling handleGenerateCard", error);
@@ -130,7 +131,7 @@ export default function MyCards() {
       />
       <div className="relative py-14 flex flex-col gap-8">
         {!cards.length ? (
-          <Empty />
+          <Empty label="No cards generated yet." />
         ) : (
           <div className="flex flex-col gap-16">
             {cards.map((card) => (
@@ -142,8 +143,13 @@ export default function MyCards() {
                 title={card.title}
                 price={5}
                 hasBookmarked={card.saved}
-                message={message}
-                setMessage={setMessage}
+                checkoutURL=""
+                frontMessage=""
+                insideMessage=""
+                setFrontMessage={() => {}}
+                setInsideMessage={() => {}}
+                // message={message}
+                // setMessage={setMessage}
               />
             ))}
           </div>

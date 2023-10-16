@@ -1,3 +1,7 @@
-export const Empty = () => {
-  return <h3 className="text-xl text-center">No cards generated yet.</h3>;
+type EmptyProps = {
+  label: string;
+};
+
+export const Empty = ({label}: EmptyProps) => {
+  return <h3 className="text-xl text-center">{label}</h3>;
 };
