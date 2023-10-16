@@ -12,6 +12,7 @@ import {ECardSize, TArtisticStyle, TCardSize, TToast} from "../types";
 import {useUploadImage} from "../hooks/use-upload-image";
 import {useSetUser} from "../hooks/use-set-user";
 import {Toast} from "../components/toast";
+import {useCheckoutSession} from "../hooks/use-checkout-session";
 
 export default function MyCards() {
   const [loading, setLoading] = useState(false);
@@ -31,6 +32,7 @@ export default function MyCards() {
   const [menuOpen, setMenuOpen] = useState(false);
   const isInitialRender = useRef(true);
   const generateCard = useGenerateCard();
+  const checkout = useCheckoutSession();
   const userId = useUserId();
 
   const {cards} = useFirestoreSnapshot({
@@ -145,6 +147,7 @@ export default function MyCards() {
                 title={card.title}
                 price={5}
                 hasBookmarked={card.saved}
+                checkoutURL={checkout?.data?.url}
                 frontMessage={frontMessage}
                 setFrontMessage={setFrontMessage}
                 insideMessage={insideMessage}

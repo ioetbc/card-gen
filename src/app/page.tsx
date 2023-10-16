@@ -14,10 +14,13 @@ import {Filters} from "./components/filters";
 import {Tray} from "./components/tray";
 import {ProductCard} from "./components/product-card";
 import AccordionDemo from "./components/accordion";
+import {useCheckoutSession} from "./hooks/use-checkout-session";
 
 export default function Home() {
+  const checkout = useCheckoutSession();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [message, setMessage] = useState("");
+  const [frontMessage, setFrontMessage] = useState("");
+  const [insideMessage, setInsideMessage] = useState("");
 
   const router = useRouter();
   const userId = useUserId();
@@ -57,7 +60,7 @@ export default function Home() {
         >
           <ScrollY>
             {cards.map((card) => (
-              <div className="w-[325px]" key={card.id}>
+              <div className="w-[300px]" key={card.id}>
                 <ProductCard
                   id={card.id}
                   image={card.image}
@@ -65,8 +68,11 @@ export default function Home() {
                   title={card.title}
                   price={5}
                   hasBookmarked={card.saved}
-                  message={message}
-                  setMessage={setMessage}
+                  checkoutURL={checkout?.data?.url}
+                  frontMessage={frontMessage}
+                  setFrontMessage={setFrontMessage}
+                  insideMessage={insideMessage}
+                  setInsideMessage={setInsideMessage}
                 />
               </div>
             ))}

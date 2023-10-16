@@ -1,17 +1,15 @@
-import React, {ReactNode, forwardRef, useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import {doc, updateDoc} from "firebase/firestore";
 import {db} from "../firestore";
 
 import Image from "next/image";
 import {motion, useAnimation} from "framer-motion";
 
-import {TToast, TUser} from "../types";
+import {TToast} from "../types";
 import {useUserId} from "../hooks/use-user-id";
 import {Toast} from "./toast";
 import {Tabs} from "./tabs";
-import {CardMessage} from "./card-message";
 import {Button} from "./buttons/primary-button";
-import {useCheckoutSession} from "../hooks/use-checkout-session";
 import CardData from "./card-data";
 
 type ProductCardProps = {
@@ -20,6 +18,7 @@ type ProductCardProps = {
   title: string;
   price: number;
   prompt: string;
+  checkoutURL: string;
   hasBookmarked: boolean;
   frontMessage: string;
   setFrontMessage: (value: string) => void;
@@ -32,13 +31,13 @@ export const ProductCard = ({
   image,
   title,
   prompt,
+  checkoutURL,
   id,
   frontMessage,
   setFrontMessage,
   insideMessage,
   setInsideMessage,
 }: ProductCardProps) => {
-  const checkout = useCheckoutSession();
   const [readMore, setReadMore] = useState(false);
   const [activeTab, setActiveTab] = useState("tab1");
   const [toast, setToast] = useState<TToast>({
@@ -70,10 +69,8 @@ export const ProductCard = ({
     setActiveTab("tab2");
   };
 
-  console.log("checkout?.data?.url", checkout?.data?.url);
-
   const handlePurchase = () => {
-    window.location.assign(checkout?.data?.url);
+    window.location.assign(checkoutURL);
   };
 
   const handleBookmarkClick = async () => {
