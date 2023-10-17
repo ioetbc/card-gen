@@ -2,21 +2,22 @@ import React, {useRef, useState} from "react";
 import Image from "next/image";
 import {useAnimation} from "framer-motion";
 
-import {TToast} from "../types";
+import {TEditCard, TToast} from "../types";
 import {useUserId} from "../hooks/use-user-id";
 import {Tabs} from "./tabs";
 import {Button} from "./buttons/primary-button";
 import {PlaceholderInput} from "./inputs/placeholder-input";
 import {Input} from "./inputs/input";
+import {MESSAGE_COLORS} from "../constants";
 
 type CardProps = {
   id: string;
   image: string;
   checkoutURL: string;
-  frontMessage: string;
-  setFrontMessage: (value: string) => void;
-  insideMessage: string;
-  setInsideMessage: (value: string) => void;
+  frontMessage: TEditCard;
+  insideMessage: TEditCard;
+  setFrontMessage: (value: TEditCard) => void;
+  setInsideMessage: (value: TEditCard) => void;
 };
 
 export const Card = ({
@@ -24,53 +25,22 @@ export const Card = ({
   checkoutURL,
   id,
   frontMessage,
-  setFrontMessage,
   insideMessage,
+  setFrontMessage,
   setInsideMessage,
 }: CardProps) => {
-  const [activeTab, setActiveTab] = useState("tab1");
   const cardRef = useRef<HTMLDivElement>(null);
-
-  const handlePurchase = () => {
-    window.location.assign(checkoutURL);
-  };
 
   return (
     <div ref={cardRef} className="w-full">
-      {/* <Tabs
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        tab1Content={
-          <div className="border bg-white shadow-card relative flex items-center justify-center h-[500px]">
-            <div className="absolute top-8 w-4/5">
-              <PlaceholderInput
-                handleChange={(value) => console.log(value)}
-                handleSubmit={() => console.log("submit")}
-                placeholder="Happy birthday bitch!"
-              />
-            </div>
-            <div className="relative w-full">
-              <div className="h-full flex items-center justify-center">
-                <Image src={image} width={200} height={200} alt="card image" />
-              </div>
-            </div>
-          </div>
-        }
-        tab2Content={
-          <div className="relative w-full aspect-square">
-            <p className="bg-white w-full px-4 text-center">{insideMessage}</p>
-          </div>
-        }
-      /> */}
-
       <div className="flex gap-8 flex-col">
         <div className="border bg-white shadow-card rounded-xl relative flex items-center justify-center h-[500px]">
           <div className="absolute top-8 w-4/5">
-            <PlaceholderInput
-              handleChange={(value) => console.log(value)}
-              handleSubmit={() => console.log("submit")}
-              placeholder="Happy birthday bitch!"
-            />
+            <div
+              className={`text-${frontMessage.alignment} text-${frontMessage.size} text-${frontMessage.color}-500`}
+            >
+              {frontMessage.value}
+            </div>
           </div>
           <div className="relative w-full">
             <div className="h-full flex items-center justify-center">
@@ -82,7 +52,7 @@ export const Card = ({
         <div className="border border-gray-200 bg-white rounded-xl shadow-card">
           <div className="border-b border-gray-200">
             <div className="p-4">
-              <h2 className="text-xl">Card messages</h2>
+              <h2 className="text-xl">Edit card</h2>
             </div>
           </div>
           <div className="p-4">
@@ -95,34 +65,143 @@ export const Card = ({
               </div>
             </div>
           </div>
-          {/* <div className="border-b border-t border-gray-200">
-            <div className="p-4">
-              <h2 className="text-xl">Card messages</h2>
-            </div>
-          </div> */}
 
           <div className="p-4 flex gap-2 flex-col border-b border-gray-200">
             <p>Front message</p>
-            <Input
-              handleChange={(value) => console.log(value)}
-              handleSubmit={() => console.log("submitted")}
-              placeholder="Happy birthday Bob!"
-              icon="search"
-            ></Input>
-          </div>
-          <div className="p-4 flex gap-2 flex-col border-b border-gray-200">
-            <p>Inside message</p>
-            <Input
-              handleChange={(value) => console.log(value)}
-              handleSubmit={() => console.log("submitted")}
-              placeholder="Dear Bob, Happy birthday you..."
-              icon="search"
-            ></Input>
+            <div className="pb-4">
+              <Input
+                handleChange={(value) =>
+                  setFrontMessage({...frontMessage, value})
+                }
+                handleSubmit={() => console.log("submitted")}
+                placeholder="Happy birthday Bob!"
+                icon="search"
+                value={frontMessage.value}
+              ></Input>
+            </div>
+
+            <div className="flex flex-col gap-4 justify-between">
+              <div className="flex gap-2">
+                <div
+                  className={`border rounded-md ${
+                    frontMessage.color === "black"
+                      ? "border-black"
+                      : "border-transparent"
+                  } p-1`}
+                  onClick={() =>
+                    setFrontMessage({...frontMessage, color: "black"})
+                  }
+                >
+                  <div className="w-6 h-6 bg-black rounded-md"></div>
+                </div>
+                <div
+                  className={`border rounded-md ${
+                    frontMessage.color === "blue"
+                      ? "border-black"
+                      : "border-transparent"
+                  } p-1`}
+                  onClick={() =>
+                    setFrontMessage({...frontMessage, color: "blue"})
+                  }
+                >
+                  <div className="w-6 h-6 bg-blue-500 rounded-md"></div>
+                </div>
+                <div
+                  className={`border rounded-md ${
+                    frontMessage.color === "green"
+                      ? "border-black"
+                      : "border-transparent"
+                  } p-1`}
+                  onClick={() =>
+                    setFrontMessage({...frontMessage, color: "green"})
+                  }
+                >
+                  <div className="w-6 h-6 bg-green-500 rounded-md"></div>
+                </div>
+                <div
+                  className={`border rounded-md ${
+                    frontMessage.color === "purple"
+                      ? "border-black"
+                      : "border-transparent"
+                  } p-1`}
+                  onClick={() =>
+                    setFrontMessage({...frontMessage, color: "purple"})
+                  }
+                >
+                  <div className="w-6 h-6 bg-purple-500 rounded-md"></div>
+                </div>
+                <div
+                  className={`border rounded-md ${
+                    frontMessage.color === "red"
+                      ? "border-black"
+                      : "border-transparent"
+                  } p-1`}
+                  onClick={() =>
+                    setFrontMessage({...frontMessage, color: "red"})
+                  }
+                >
+                  <div className="w-6 h-6 bg-red-500 rounded-md"></div>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <div
+                  className={`border rounded-md ${
+                    frontMessage.alignment === "left"
+                      ? "border-black"
+                      : "border-transparent"
+                  } p-1`}
+                  onClick={() =>
+                    setFrontMessage({...frontMessage, alignment: "left"})
+                  }
+                >
+                  <Image
+                    src="/text-align-left.svg"
+                    width={24}
+                    height={24}
+                    alt="align text left"
+                  />
+                </div>
+                <div
+                  className={`border rounded-md ${
+                    frontMessage.alignment === "center"
+                      ? "border-black"
+                      : "border-transparent"
+                  } p-1`}
+                  onClick={() =>
+                    setFrontMessage({...frontMessage, alignment: "center"})
+                  }
+                >
+                  <Image
+                    src="/text-align-center.svg"
+                    width={24}
+                    height={24}
+                    alt="align text left"
+                  />
+                </div>
+                <div
+                  className={`border rounded-md ${
+                    frontMessage.alignment === "right"
+                      ? "border-black"
+                      : "border-transparent"
+                  } p-1`}
+                  onClick={() =>
+                    setFrontMessage({...frontMessage, alignment: "right"})
+                  }
+                >
+                  <Image
+                    src="/text-align-right.svg"
+                    width={24}
+                    height={24}
+                    alt="align text left"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
           <div className="flex justify-end p-4">
             <Button
               handleOnClick={() => console.log("search for postcode")}
-              label="Add shipping"
+              label="Next: Shipping"
               type="primary"
               disabled={false}
               loading={false}

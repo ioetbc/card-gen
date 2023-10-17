@@ -120,3 +120,10 @@ export type TToast = {
   description: string;
   fill: "pink" | "red";
 };
+
+export type TEditCard = {
+  value: string;
+  color: string;
+  alignment: "left" | "center" | "right";
+  size: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+};

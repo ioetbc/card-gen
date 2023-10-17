@@ -6,6 +6,7 @@ type TextAreaProps = {
   placeholder: string;
   handleSubmit: () => void;
   icon?: string;
+  value?: string;
 };
 
 // TODO = Make the input a textarea and expand in height as the user types
@@ -16,6 +17,7 @@ export const Input = ({
   placeholder,
   handleSubmit,
   icon,
+  value,
 }: TextAreaProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -41,6 +43,7 @@ export const Input = ({
         onChange={(event) => handleChange(event.target.value)}
         className="border border-black rounded-lg w-full py-4 px-4 pr-10 bg-white placeholder:text-sm placeholder:text-gray-400"
         placeholder={placeholder}
+        value={value}
       />
 
       {icon && (

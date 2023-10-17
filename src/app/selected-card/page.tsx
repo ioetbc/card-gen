@@ -6,9 +6,25 @@ import {Header} from "../components/Header";
 import {Toast} from "../components/toast";
 import {useFirestoreBookmarkedCard} from "../hooks/use-firestore-bookmarked-card";
 import {Card} from "../components/card";
+import {TEditCard} from "../types";
 
 export default function MyCards() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const [frontMessage, setFrontMessage] = useState<TEditCard>({
+    value: "Happy Christmas Bob!",
+    color: "blue",
+    alignment: "center",
+    size: "2xl",
+  });
+
+  const [insideMessage, setInsideMessage] = useState<TEditCard>({
+    value: "To Bob, Merry christmas...",
+    color: "black",
+    alignment: "left",
+    size: "md",
+  });
+
   const userId = useUserId();
 
   const {cards} = useFirestoreBookmarkedCard({
@@ -28,11 +44,11 @@ export default function MyCards() {
             <Card
               id={card.id}
               checkoutURL="something"
-              frontMessage="something"
               image={card.image}
-              insideMessage="to bob, happy bornday"
-              setFrontMessage={() => {}}
-              setInsideMessage={() => {}}
+              frontMessage={frontMessage}
+              insideMessage={insideMessage}
+              setFrontMessage={(value) => setFrontMessage(value)}
+              setInsideMessage={(value) => setInsideMessage(value)}
             />
           </div>
         )}

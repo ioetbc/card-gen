@@ -166,3 +166,13 @@ export const FOOTER_ITEMS: FooterItem[] = [
     url: "contact-us",
   },
 ];
+
+export const MESSAGE_COLORS = [
+  "red",
+  "blue",
+  "green",
+  "black",
+  "orange",
+  "yellow",
+  "purple",
+];
