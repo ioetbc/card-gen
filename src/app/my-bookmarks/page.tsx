@@ -4,7 +4,6 @@ import {Empty} from "../components/empty";
 import {useGenerateCard} from "../hooks/use-generate-card";
 import {useUserId} from "../hooks/use-user-id";
 import {ProductCard} from "../components/product-card";
-import {useFirestoreSnapshot} from "../hooks/use-firestore-snapshot";
 import {Prompt} from "../components/prompt";
 import {Header} from "../components/Header";
 import {Button} from "../components/buttons/primary-button";

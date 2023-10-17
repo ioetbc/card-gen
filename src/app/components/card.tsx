@@ -1,17 +1,13 @@
 import React, {useRef, useState} from "react";
-import {doc, updateDoc} from "firebase/firestore";
-import {db} from "../firestore";
-
 import Image from "next/image";
-import {motion, useAnimation} from "framer-motion";
+import {useAnimation} from "framer-motion";
 
 import {TToast} from "../types";
 import {useUserId} from "../hooks/use-user-id";
-import {Toast} from "./toast";
 import {Tabs} from "./tabs";
 import {Button} from "./buttons/primary-button";
-import CardData from "./card-data";
 import {PlaceholderInput} from "./inputs/placeholder-input";
+import {Input} from "./inputs/input";
 
 type CardProps = {
   id: string;
@@ -32,30 +28,8 @@ export const Card = ({
   insideMessage,
   setInsideMessage,
 }: CardProps) => {
-  const [readMore, setReadMore] = useState(false);
   const [activeTab, setActiveTab] = useState("tab1");
-  const [toast, setToast] = useState<TToast>({
-    open: false,
-    description: "",
-    fill: "pink",
-  });
-
-  const controls = useAnimation();
-  const userId = useUserId();
-  const timerRef = useRef(0);
-
   const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleAddMessage = () => {
-    if (!cardRef.current) return;
-
-    cardRef.current.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-
-    setActiveTab("tab2");
-  };
 
   const handlePurchase = () => {
     window.location.assign(checkoutURL);
@@ -63,22 +37,20 @@ export const Card = ({
 
   return (
     <div ref={cardRef} className="w-full">
-      <Tabs
+      {/* <Tabs
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         tab1Content={
-          <div className="border bg-white shadow-card relative">
-            <div className="absolute top-8 w-full flex items-center justify-center">
-              <div className="w-4/5">
-                <PlaceholderInput
-                  handleChange={(value) => console.log(value)}
-                  handleSubmit={() => console.log("submit")}
-                  placeholder="Happy birthday bitch!"
-                />
-              </div>
+          <div className="border bg-white shadow-card relative flex items-center justify-center h-[500px]">
+            <div className="absolute top-8 w-4/5">
+              <PlaceholderInput
+                handleChange={(value) => console.log(value)}
+                handleSubmit={() => console.log("submit")}
+                placeholder="Happy birthday bitch!"
+              />
             </div>
-            <div className="relative w-full h-[450px]">
-              <div className="p-4 h-full flex items-center justify-center">
+            <div className="relative w-full">
+              <div className="h-full flex items-center justify-center">
                 <Image src={image} width={200} height={200} alt="card image" />
               </div>
             </div>
@@ -89,20 +61,112 @@ export const Card = ({
             <p className="bg-white w-full px-4 text-center">{insideMessage}</p>
           </div>
         }
-      />
-      <div className="border-t border-gray-200">
-        <CardData
-          setFrontMessage={setFrontMessage}
-          setInsideMessage={setInsideMessage}
-        />
-      </div>
-      <div className="px-4 py-4 flex flex-col gap-2 border-t border-gray-200">
-        <Button
-          size="fit"
-          label="Purchase"
-          type="primary"
-          handleOnClick={handlePurchase}
-        />
+      /> */}
+
+      <div className="flex gap-8 flex-col">
+        <div className="border bg-white shadow-card rounded-md relative flex items-center justify-center h-[500px]">
+          <div className="absolute top-8 w-4/5">
+            <PlaceholderInput
+              handleChange={(value) => console.log(value)}
+              handleSubmit={() => console.log("submit")}
+              placeholder="Happy birthday bitch!"
+            />
+          </div>
+          <div className="relative w-full">
+            <div className="h-full flex items-center justify-center">
+              <Image src={image} width={200} height={200} alt="card image" />
+            </div>
+          </div>
+        </div>
+
+        <div className="border border-gray-200 bg-white rounded-xl shadow-card">
+          <div className="p-4 border-b border-gray-200">
+            <div className="border border-gray-200 flex rounded-lg">
+              <div className="py-3 px-4 bg-gray-200 rounded-s-lg w-full text-center">
+                Front of card
+              </div>
+              <div className="py-3 px-4 w-full text-center rounded-lg">
+                Inside of card
+              </div>
+            </div>
+          </div>
+
+          {/* <div className="border-b border-gray-200">
+            <div className="p-4">
+              <h2 className="text-xl">Card details</h2>
+            </div>
+          </div> */}
+
+          <div className="p-4 flex gap-2 flex-col border-b border-gray-200">
+            <p>Front message</p>
+            <Input
+              handleChange={(value) => console.log(value)}
+              handleSubmit={() => console.log("submitted")}
+              placeholder="Happy birthday Bob!"
+              icon="search"
+            ></Input>
+          </div>
+          <div className="p-4 flex gap-2 flex-col">
+            <p>Inside message</p>
+            <Input
+              handleChange={(value) => console.log(value)}
+              handleSubmit={() => console.log("submitted")}
+              placeholder="Dear Bob, Happy birthday you..."
+              icon="search"
+            ></Input>
+          </div>
+        </div>
+
+        <div className="border border-gray-200 bg-white rounded-xl shadow-card">
+          <div className="border-b border-gray-200">
+            <div className="p-4">
+              <h2 className="text-xl">Shipping details</h2>
+            </div>
+          </div>
+          <div className="grid grid-cols-6 justify-items-end gap-4 p-4">
+            <div className="col-span-4">
+              <Input
+                handleChange={(value) => console.log(value)}
+                handleSubmit={() => console.log("submitted")}
+                placeholder="SE267 9LF"
+                icon="search"
+              ></Input>
+            </div>
+
+            <div className="col-span-2">
+              <Button
+                handleOnClick={() => console.log("search for postcode")}
+                label="Search"
+                type="primary"
+                disabled={false}
+                loading={true}
+              />
+            </div>
+          </div>
+          <div className="border-t border-gray-200">
+            <div className="p-4">
+              <p>address line 1</p>
+            </div>
+          </div>
+          <div className="border-t border-gray-200">
+            <div className="p-4">
+              <p>address line 2</p>
+            </div>
+          </div>
+          <div className="border-t border-gray-200">
+            <div className="p-4">
+              <p>address line 3</p>
+            </div>
+          </div>
+          <div className="px-4 py-4 flex flex-col gap-2 border-t border-gray-200">
+            <Button
+              size="fit"
+              label="Purchase"
+              type="primary"
+              handleOnClick={handlePurchase}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -39,7 +39,7 @@ export const Button = ({
         isPrimary
           ? "text-white bg-black border border-transparent"
           : "text-black bg-white border border-gray-400"
-      } py-4 px-8 rounded-lg shadow-button ${
+      } py-4 px-8 rounded-lg shadow-button h-full ${
         disabled || loading
           ? "cursor-not-allowed bg-gray-800"
           : "cursor-pointer bg-black"
