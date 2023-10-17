@@ -64,7 +64,7 @@ export const Card = ({
       /> */}
 
       <div className="flex gap-8 flex-col">
-        <div className="border bg-white shadow-card rounded-md relative flex items-center justify-center h-[500px]">
+        <div className="border bg-white shadow-card rounded-xl relative flex items-center justify-center h-[500px]">
           <div className="absolute top-8 w-4/5">
             <PlaceholderInput
               handleChange={(value) => console.log(value)}
@@ -80,9 +80,14 @@ export const Card = ({
         </div>
 
         <div className="border border-gray-200 bg-white rounded-xl shadow-card">
-          <div className="p-4 border-b border-gray-200">
-            <div className="border border-gray-200 flex rounded-lg">
-              <div className="py-3 px-4 bg-gray-200 rounded-s-lg w-full text-center">
+          <div className="border-b border-gray-200">
+            <div className="p-4">
+              <h2 className="text-xl">Card messages</h2>
+            </div>
+          </div>
+          <div className="p-4">
+            <div className="border border-black flex rounded-lg bg-white">
+              <div className="py-3 px-4 bg-gray-200 border-r border-black rounded-s-lg w-full text-center">
                 Front of card
               </div>
               <div className="py-3 px-4 w-full text-center rounded-lg">
@@ -90,10 +95,9 @@ export const Card = ({
               </div>
             </div>
           </div>
-
-          {/* <div className="border-b border-gray-200">
+          {/* <div className="border-b border-t border-gray-200">
             <div className="p-4">
-              <h2 className="text-xl">Card details</h2>
+              <h2 className="text-xl">Card messages</h2>
             </div>
           </div> */}
 
@@ -106,7 +110,7 @@ export const Card = ({
               icon="search"
             ></Input>
           </div>
-          <div className="p-4 flex gap-2 flex-col">
+          <div className="p-4 flex gap-2 flex-col border-b border-gray-200">
             <p>Inside message</p>
             <Input
               handleChange={(value) => console.log(value)}
@@ -115,9 +119,18 @@ export const Card = ({
               icon="search"
             ></Input>
           </div>
+          <div className="flex justify-end p-4">
+            <Button
+              handleOnClick={() => console.log("search for postcode")}
+              label="Add shipping"
+              type="primary"
+              disabled={false}
+              loading={false}
+            />
+          </div>
         </div>
 
-        <div className="border border-gray-200 bg-white rounded-xl shadow-card">
+        {/* <div className="border border-gray-200 bg-white rounded-xl shadow-card">
           <div className="border-b border-gray-200">
             <div className="p-4">
               <h2 className="text-xl">Shipping details</h2>
@@ -143,7 +156,7 @@ export const Card = ({
               />
             </div>
           </div>
-          <div className="border-t border-gray-200">
+          {/* <div className="border-t border-gray-200">
             <div className="p-4">
               <p>address line 1</p>
             </div>
@@ -166,7 +179,7 @@ export const Card = ({
               handleOnClick={handlePurchase}
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
