@@ -21,15 +21,15 @@ export const Input = ({
 }: TextAreaProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    if (!inputRef.current) return;
+  // useEffect(() => {
+  //   if (!inputRef.current) return;
 
-    const timeout = setTimeout(() => {
-      inputRef.current?.focus();
-    }, 600);
+  //   const timeout = setTimeout(() => {
+  //     inputRef.current?.focus();
+  //   }, 600);
 
-    return () => clearTimeout(timeout);
-  }, [inputRef]);
+  //   return () => clearTimeout(timeout);
+  // }, [inputRef]);
 
   const handleOnClick = () => {
     handleSubmit();

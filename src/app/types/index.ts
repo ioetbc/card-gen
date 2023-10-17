@@ -121,8 +121,19 @@ export type TToast = {
   fill: "pink" | "red";
 };
 
-export type TEditCard = {
+export type TEditFrontCard = {
   value: string;
+  color: string;
+  alignment: "left" | "center" | "right";
+  size: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+};
+
+export type TEditInsideCard = {
+  value: {
+    header: string;
+    body: string;
+    footer: string;
+  };
   color: string;
   alignment: "left" | "center" | "right";
   size: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
