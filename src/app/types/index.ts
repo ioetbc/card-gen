@@ -121,11 +121,17 @@ export type TToast = {
   fill: "pink" | "red";
 };
 
+export enum EFontFamily {
+  HELVETICA = "helvetica",
+  COMIC_SANS = "comic-sans",
+}
+
 export type TEditFrontCard = {
   value: string;
   color: string;
   alignment: "left" | "center" | "right";
   size: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+  family: EFontFamily;
 };
 
 export type TEditInsideCard = {
@@ -137,4 +143,9 @@ export type TEditInsideCard = {
   color: string;
   alignment: "left" | "center" | "right";
   size: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+  family: EFontFamily;
+};
+
+export type TextColorMap = {
+  [key: string]: string;
 };

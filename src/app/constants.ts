@@ -1,4 +1,4 @@
-import {ArtisticOptions, FooterItem} from "./types";
+import {ArtisticOptions, FooterItem, TextColorMap} from "./types";
 
 export const STABLE_DIFFUSION_IMAGE_2_IMAGE_URL =
   "https://stablediffusionapi.com/api/v3/img2img";
@@ -167,12 +167,10 @@ export const FOOTER_ITEMS: FooterItem[] = [
   },
 ];
 
-export const MESSAGE_COLORS = [
-  "red",
-  "blue",
-  "green",
-  "black",
-  "orange",
-  "yellow",
-  "purple",
-];
+export const MESSAGE_COLORS: TextColorMap = {
+  black: "text-blue-500",
+  green: "text-green-500",
+  purple: "text-purple-500",
+  red: "text-red-500",
+  blue: "text-blue-500",
+};
