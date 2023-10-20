@@ -6,11 +6,11 @@ import {Header} from "../components/Header";
 import {Toast} from "../components/toast";
 import {useFirestoreBookmarkedCard} from "../hooks/use-firestore-bookmarked-card";
 import {Card} from "../components/edit-card";
-import {EFontFamily, TEditFrontCard, TEditInsideCard} from "../types";
+import {EFontFamily, TAddress, TEditFrontCard, TEditInsideCard} from "../types";
 
 export default function MyCards() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [postcode, setPostcode] = useState<string | null>(null);
+  const [address, setAddress] = useState<TAddress | null>(null);
   const [frontMessage, setFrontMessage] = useState<TEditFrontCard>({
     value: "Happy Christmas Bob!",
     color: "blue",
@@ -55,8 +55,8 @@ export default function MyCards() {
               insideMessage={insideMessage}
               setFrontMessage={(value) => setFrontMessage(value)}
               setInsideMessage={(value) => setInsideMessage(value)}
-              postcode={postcode}
-              setPostcode={setPostcode}
+              address={address}
+              setAddress={setAddress}
             />
           </div>
         )}

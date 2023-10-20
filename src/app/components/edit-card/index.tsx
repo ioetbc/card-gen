@@ -1,7 +1,13 @@
 import React, {useRef, useState} from "react";
 import Image from "next/image";
 
-import {EFontFamily, TEditFrontCard, TEditInsideCard} from "../../types";
+import {
+  TAddress,
+  EFontFamily,
+  TEditFrontCard,
+  TEditInsideCard,
+  TAddressMeta,
+} from "../../types";
 import {Button} from "../buttons/primary-button";
 import {Input} from "../inputs/input";
 import {Tabs} from "./tabs";
@@ -9,6 +15,8 @@ import {ColorSwatches} from "./color-swatches";
 import {Alignment} from "./alignment";
 import {MESSAGE_COLORS} from "@/app/constants";
 import {isValid} from "postcode";
+import {Postcode} from "../postcode";
+import {usePostcodeLookup} from "@/app/hooks/use-postcode-lookup";
 
 type CardProps = {
   id: string;
@@ -16,8 +24,8 @@ type CardProps = {
   checkoutURL: string;
   frontMessage: TEditFrontCard;
   insideMessage: TEditInsideCard;
-  postcode: string | null;
-  setPostcode: (value: string) => void;
+  address: TAddress | null;
+  setAddress: (value: TAddress | null) => void;
   setFrontMessage: (value: TEditFrontCard) => void;
   setInsideMessage: (value: TEditInsideCard) => void;
 };
@@ -26,13 +34,14 @@ export const Card = ({
   image,
   checkoutURL,
   id,
-  postcode,
-  setPostcode,
+  address,
+  setAddress,
   frontMessage,
   insideMessage,
   setFrontMessage,
   setInsideMessage,
 }: CardProps) => {
+  const postcodeLookup = usePostcodeLookup();
   const [activeTab, setActiveTab] = useState("tab1");
   const [editCardShow, setEditCardShow] = useState(true);
 
@@ -43,15 +52,29 @@ export const Card = ({
   };
 
   const handlePostcodeChange = (postcode: string) => {
-    if (isValid(postcode)) {
-      setPostcode(postcode);
-    }
+    console.log("postcode", postcode);
+    if (!isValid(postcode)) return;
+    postcodeLookup.mutateAsync({postcode});
   };
 
-  const handlePostcodeSearch = () => {
-    // run postcode check using postcode package
-    console.log("search for postcode", postcode);
+  const handleSelectAddress = (value: TAddress | null) => {
+    console.log("selected address", value);
+    if (!value) return;
+    setAddress(value);
   };
+
+  const handleAddressChange = ({key, value}: {key: any; value: any}) => {
+    if (!key) return;
+    if (!value) return;
+    // setAddress({
+    //   ...address,
+    //   [key]: value,
+    // });
+  };
+
+  console.log("address", address);
+
+  const addresses = postcodeLookup?.data?.addresses ?? [];
 
   return (
     <div ref={cardRef} className="w-full">
@@ -99,7 +122,7 @@ export const Card = ({
         <div className="border border-gray-200 bg-white rounded-xl shadow-card">
           <div className="border-b border-gray-200">
             <div className="p-4 flex justify-between">
-              <h2 className="text-xl">Edit card</h2>
+              <h2 className="text-xl">Personalise card</h2>
               {!editCardShow && (
                 <Image
                   src="pencil.svg"
@@ -260,15 +283,81 @@ export const Card = ({
           {!editCardShow && (
             <>
               <div className="p-4 flex gap-2 flex-col border-b border-gray-200">
-                <p>Postcode</p>
+                {!address && <p>Postcode</p>}
                 <div className="pb-4">
-                  <Input
-                    handleChange={handlePostcodeChange}
-                    handleSubmit={handlePostcodeSearch}
-                    placeholder="E27 9LF"
-                    icon="search"
-                    value={postcode}
-                  ></Input>
+                  {!address && (
+                    <Postcode
+                      options={addresses}
+                      loading={postcodeLookup.isLoading}
+                      handlePostcodeChange={handlePostcodeChange}
+                      handleSelectAddress={handleSelectAddress}
+                    />
+                  )}
+                  {address && (
+                    <div className="flex flex-col gap-2">
+                      <Input
+                        value={address.meta.line1}
+                        handleChange={(value) =>
+                          handleAddressChange({
+                            key: "line1",
+                            value,
+                          })
+                        }
+                        placeholder="Address line 1"
+                        handleSubmit={() => console.log("submitted")}
+                      />
+                      <Input
+                        value={address.meta.line2}
+                        handleChange={(value) =>
+                          handleAddressChange({
+                            key: "line1",
+                            value,
+                          })
+                        }
+                        placeholder="Address line 2"
+                        handleSubmit={() => console.log("submitted")}
+                      />
+                      <Input
+                        value={address.meta.city}
+                        handleChange={(value) =>
+                          handleAddressChange({
+                            key: "line1",
+                            value,
+                          })
+                        }
+                        placeholder="City"
+                        handleSubmit={() => console.log("submitted")}
+                      />
+                      <Input
+                        value={address.meta.country}
+                        handleChange={(value) =>
+                          handleAddressChange({
+                            key: "line1",
+                            value,
+                          })
+                        }
+                        placeholder="City"
+                        handleSubmit={() => console.log("submitted")}
+                      />
+                      <Input
+                        value={address.meta.postcode}
+                        handleChange={(value) =>
+                          handleAddressChange({
+                            key: "line1",
+                            value,
+                          })
+                        }
+                        placeholder="Postcode"
+                        handleSubmit={() => console.log("submitted")}
+                      />
+                      <p
+                        className="underline text-right text-xs"
+                        onClick={() => setAddress(null)}
+                      >
+                        Enter postcode
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -284,57 +373,6 @@ export const Card = ({
             </>
           )}
         </div>
-
-        {/* <div className="border border-gray-200 bg-white rounded-xl shadow-card">
-          <div className="border-b border-gray-200">
-            <div className="p-4">
-              <h2 className="text-xl">Shipping details</h2>
-            </div>
-          </div>
-          <div className="grid grid-cols-6 justify-items-end gap-4 p-4">
-            <div className="col-span-4">
-              <Input
-                handleChange={(value) => console.log(value)}
-                handleSubmit={() => console.log("submitted")}
-                placeholder="SE267 9LF"
-                icon="search"
-              ></Input>
-            </div>
-
-            <div className="col-span-2">
-              <Button
-                handleOnClick={() => console.log("search for postcode")}
-                label="Search"
-                type="primary"
-                disabled={false}
-                loading={true}
-              />
-            </div>
-          </div>
-          {/* <div className="border-t border-gray-200">
-            <div className="p-4">
-              <p>address line 1</p>
-            </div>
-          </div>
-          <div className="border-t border-gray-200">
-            <div className="p-4">
-              <p>address line 2</p>
-            </div>
-          </div>
-          <div className="border-t border-gray-200">
-            <div className="p-4">
-              <p>address line 3</p>
-            </div>
-          </div>
-          <div className="px-4 py-4 flex flex-col gap-2 border-t border-gray-200">
-            <Button
-              size="fit"
-              label="Purchase"
-              type="primary"
-              handleOnClick={handlePurchase}
-            />
-          </div>
-        </div> */}
       </div>
     </div>
   );

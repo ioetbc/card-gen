@@ -43,6 +43,7 @@ export const Input = ({
         onChange={(event) => handleChange(event.target.value)}
         className="border border-black rounded-lg w-full py-4 px-4 pr-10 bg-white placeholder:text-sm placeholder:text-gray-400"
         placeholder={placeholder}
+        value={value || ""}
       />
 
       {icon && (
