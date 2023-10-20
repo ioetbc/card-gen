@@ -363,10 +363,10 @@ export const Card = ({
 
               <div className="flex justify-end p-4">
                 <Button
-                  handleOnClick={handleToggleEditCard}
+                  handleOnClick={() => window.location.assign(checkoutURL)}
                   label="Purchase"
                   type="primary"
-                  disabled={false}
+                  disabled={!address}
                   loading={false}
                 />
               </div>

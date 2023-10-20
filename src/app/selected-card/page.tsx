@@ -3,12 +3,13 @@ import React, {useState} from "react";
 import {Empty} from "../components/empty";
 import {useUserId} from "../hooks/use-user-id";
 import {Header} from "../components/Header";
-import {Toast} from "../components/toast";
 import {useFirestoreBookmarkedCard} from "../hooks/use-firestore-bookmarked-card";
 import {Card} from "../components/edit-card";
 import {EFontFamily, TAddress, TEditFrontCard, TEditInsideCard} from "../types";
+import {useCheckoutSession} from "../hooks/use-checkout-session";
 
 export default function MyCards() {
+  const checkout = useCheckoutSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const [address, setAddress] = useState<TAddress | null>(null);
   const [frontMessage, setFrontMessage] = useState<TEditFrontCard>({
@@ -49,7 +50,7 @@ export default function MyCards() {
           <div className="flex flex-col gap-16">
             <Card
               id={card.id}
-              checkoutURL="something"
+              checkoutURL={checkout?.data?.url}
               image={card.image}
               frontMessage={frontMessage}
               insideMessage={insideMessage}

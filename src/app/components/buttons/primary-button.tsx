@@ -41,7 +41,7 @@ export const Button = ({
           : "text-black bg-white border border-gray-400"
       } py-4 px-8 rounded-lg shadow-button ${
         disabled || loading
-          ? "cursor-not-allowed bg-gray-800"
+          ? "cursor-not-allowed bg-gray-400"
           : "cursor-pointer bg-black"
       }`}
       onClick={handleOnClick}
