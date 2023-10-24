@@ -8,9 +8,7 @@ import {motion, useAnimation} from "framer-motion";
 import {TToast} from "../types";
 import {useUserId} from "../hooks/use-user-id";
 import {Toast} from "./toast";
-import {Tabs} from "./tabs";
 import {Button} from "./buttons/primary-button";
-import CardData from "./card-data";
 import {useRouter} from "next/navigation";
 
 type ProductCardProps = {

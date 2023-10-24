@@ -36,6 +36,7 @@ export const Prompt = ({
           placeholder="A happy dog sitting in front"
           handleSubmit={handleSubmit}
           icon={loading ? "loading" : "search"}
+          value={prompt}
         />
       </div>
       <div className="flex items-center px-4">
