@@ -11,6 +11,7 @@ import {Toast} from "./toast";
 import {Tabs} from "./tabs";
 import {Button} from "./buttons/primary-button";
 import CardData from "./card-data";
+import {useRouter} from "next/navigation";
 
 type ProductCardProps = {
   id: string;
@@ -38,6 +39,7 @@ export const ProductCard = ({
   insideMessage,
   setInsideMessage,
 }: ProductCardProps) => {
+  const router = useRouter();
   const [readMore, setReadMore] = useState(false);
   const [activeTab, setActiveTab] = useState("tab1");
   const [toast, setToast] = useState<TToast>({
@@ -70,7 +72,7 @@ export const ProductCard = ({
   };
 
   const handlePurchase = () => {
-    window.location.assign(checkoutURL);
+    router.push(`selected-card?${id}`);
   };
 
   const handleBookmarkClick = async () => {
@@ -111,30 +113,18 @@ export const ProductCard = ({
     <div ref={cardRef} className="w-full">
       <div className="shadow-card rounded-xl">
         <div className="border rounded-xl border-gray-400 bg-white">
-          <Tabs
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            tab1Content={
-              <div className="relative w-full aspect-square">
-                <Image
-                  src={image}
-                  fill={true}
-                  alt="thing"
-                  className="rounded-t-xl "
-                />
-                <p className="absolute z-10 bg-white bottom-0 w-full px-4 text-center">
-                  {frontMessage}
-                </p>
-              </div>
-            }
-            tab2Content={
-              <div className="relative w-full aspect-square p-4">
-                <p className="bg-white w-full px-4 text-center">
-                  {insideMessage}
-                </p>
-              </div>
-            }
-          />
+          <div className="relative w-full aspect-square">
+            <Image
+              src={image}
+              fill={true}
+              alt="thing"
+              className="rounded-t-xl "
+            />
+            <p className="absolute z-10 bg-white bottom-0 w-full px-4 text-center">
+              {frontMessage}
+            </p>
+          </div>
+
           <div className="border-b border-gray-200 px-4 flex items-center bg-white ">
             <div className="grid grid-cols-12 gap-4">
               <div className="flex items-center col-span-4 border-gray-200 border-r pr-4 py-4">
@@ -156,12 +146,6 @@ export const ProductCard = ({
               {readMore ? "Show less" : "Show more"}
             </p>
           </div>
-          <div className="border-t border-gray-200">
-            <CardData
-              setFrontMessage={setFrontMessage}
-              setInsideMessage={setInsideMessage}
-            />
-          </div>
           <div className="px-4 py-4 flex flex-col gap-2 border-t border-gray-200">
             <div className="flex justify-between">
               <div className="col-span-2 py-4 flex items-center">
@@ -177,9 +161,9 @@ export const ProductCard = ({
               </div>
               <Button
                 size="fit"
-                label="Purchase"
+                label="Select"
                 type="primary"
-                handleOnClick={handlePurchase}
+                handleOnClick={() => handlePurchase()}
               />
             </div>
           </div>
