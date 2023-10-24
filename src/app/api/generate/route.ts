@@ -83,7 +83,7 @@ const widthAndHeight = (size: TCardSize) => {
   }
 };
 
-export const maxDuration = 300;
+export const maxDuration = 10;
 
 export async function POST(request: Request) {
   const {userId, initialImage, prompt, artisticStyle, size} =
