@@ -1,14 +1,16 @@
 "use client";
 import React, {useState} from "react";
+import {useSearchParams} from "next/navigation";
 import {Empty} from "../components/empty";
 import {useUserId} from "../hooks/use-user-id";
 import {Header} from "../components/Header";
-import {useFirestoreBookmarkedCard} from "../hooks/use-firestore-bookmarked-card";
 import {Card} from "../components/edit-card";
 import {EFontFamily, TAddress, TEditFrontCard, TEditInsideCard} from "../types";
 import {useCheckoutSession} from "../hooks/use-checkout-session";
+import {useFirestoreSelectedCard} from "../hooks/use-firestore-selected-card";
 
 export default function MyCards() {
+  const searchParams = useSearchParams();
   const checkout = useCheckoutSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const [address, setAddress] = useState<TAddress | null>(null);
@@ -34,11 +36,13 @@ export default function MyCards() {
 
   const userId = useUserId();
 
-  const {cards} = useFirestoreBookmarkedCard({
-    userId,
-  });
+  const documentId = searchParams.get("document");
+  console.log("documentId", documentId);
 
-  const card = cards[0]; // use the selected card obvs
+  const {card} = useFirestoreSelectedCard({
+    userId,
+    documentId,
+  });
 
   return (
     <main className="relative py-4">

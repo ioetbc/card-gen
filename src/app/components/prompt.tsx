@@ -7,6 +7,7 @@ import {ARTISTIC_STYLES, CARD_SIZES} from "../constants";
 
 type PromptProps = {
   prompt: string;
+  placeholder: string;
   setPrompt: (value: string) => void;
   setArtisticStyle: (value: any) => void;
   size: string;
@@ -20,6 +21,7 @@ type PromptProps = {
 export const Prompt = ({
   prompt,
   setPrompt,
+  placeholder,
   setArtisticStyle,
   size,
   setSize,
@@ -33,7 +35,7 @@ export const Prompt = ({
       <div className="px-4 py-6">
         <Input
           handleChange={setPrompt}
-          placeholder="A happy dog sitting in front"
+          placeholder={placeholder}
           handleSubmit={handleSubmit}
           icon={loading ? "loading" : "search"}
           value={prompt}

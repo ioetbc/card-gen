@@ -109,7 +109,8 @@ export default function MyCards() {
               </p>
               <div className="flex flex-col gap-4">
                 <Prompt
-                  prompt="something"
+                  prompt={prompt}
+                  placeholder="A small cute cat sitting in front of a..."
                   setPrompt={setPrompt}
                   setArtisticStyle={setArtisticStyle}
                   artisticStyle={artisticStyle}

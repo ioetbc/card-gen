@@ -70,7 +70,7 @@ export const ProductCard = ({
   };
 
   const handlePurchase = () => {
-    router.push(`selected-card?${id}`);
+    router.push(`selected-card?document=${id}`);
   };
 
   const handleBookmarkClick = async () => {

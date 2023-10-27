@@ -5,7 +5,7 @@ import {useRouter} from "next/navigation";
 
 import {Button} from "./components/buttons/primary-button";
 import {useUserId} from "./hooks/use-user-id";
-import {useFirestoreSnapshot} from "./hooks/use-firestore-snapshot";
+import {useFirestoreHomePageCards} from "./hooks/use-firestore-home-page-cards";
 import {Header} from "./components/Header";
 import Image from "next/image";
 import {ScrollY} from "./components/scroll-y";
@@ -24,7 +24,7 @@ export default function Home() {
 
   const router = useRouter();
   const userId = useUserId();
-  const {cards} = useFirestoreSnapshot({
+  const {cards} = useFirestoreHomePageCards({
     userId,
   });
 
